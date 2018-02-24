@@ -8,9 +8,9 @@
 
 >> Fill in the names of your group members.
 
-Shreya Kumar
-Bristol Miller
-Corey Vessar
+Shreya Kumar <shreyak@k-state.edu>
+Corey Vessar <coreyvessar@k-state.edu>
+Bristol Miller <bristolnmiller@k-state.edu>
 
 ---- PRELIMINARIES ----
 
