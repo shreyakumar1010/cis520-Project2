@@ -39,7 +39,7 @@ process_execute (const char *file_name_plus_arguments)
   strlcpy (fn_copy, file_name_plus_arguments, PGSIZE);
    
   char *arguments;
-  char *theFileName = strtok_r((char *file_name_plus_arguments, " ", &arguments);
+  char *theFileName = strtok_r((char *) file_name_plus_arguments, " ", &arguments);
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (theFileName, PRI_DEFAULT, start_process, fn_copy);
