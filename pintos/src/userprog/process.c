@@ -233,7 +233,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
    
    while(strTokenPointer != NULL)
    {
-      strTokenPointer = strtok_r(char *) file_name, " ", &afterTokenPointer);
+      strTokenPointer = strtok_r((char *) file_name, " ", &afterTokenPointer);
       
       NameThenArguments[numOfArguments] = strTokenPointer;
       numOfArguments++;
