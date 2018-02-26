@@ -458,12 +458,47 @@ setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20])
 
   kpage = palloc_get_page (PAL_USER | PAL_ZERO);
   if (kpage != NULL) 
+  {
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
       if (success)
          
          //Offsetting phys_base as instructed in project 2
         *esp = PHYS_BASE - 12;
+     
+        unit32_t * argument_value_pointers_array[numOfArguments];
+       
+       int i = numberOfArguments -1;
+       while (i >= 0)
+       {
+          *esp = *esp - sizeof(char) * (strlen(NameThenArguments[i]) + 1);
+          memcpy(*esp, NameThenArguments[i], sizeof(char)*(strlen(NameThenArguments[i]) + 1));
+          argument_value_pointers_array[i] = (uint32_t *) *esp;
+          
+          i--;
+       }
+       *esp = *esp -4;
+       (*(int *)(*esp)) = 0; // dont really understand
+       
+       *esp = *esp -4;
+       
+       i = numberOfArguments -1;
+       while( i >= 0)
+       { 
+          (*(uint32_t **) (*esp)) = argument_value_pointers_array[i];
+          *esp = *esp -4;          
+        i--; 
+       }
+       
+       (*(uintptr_t **) (*esp)) = *esp + 4;
+       
+       *esp = *esp -4;
+       *(int *) (*esp) = numberOfArguments;
+       
+       *esp = *esp - 4;
+       (* (int *) (*esp)) = 0;
+       
+    }
       else
         palloc_free_page (kpage);
     }
