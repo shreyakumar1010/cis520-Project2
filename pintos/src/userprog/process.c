@@ -466,9 +466,9 @@ setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20])
          //Offsetting phys_base as instructed in project 2
         *esp = PHYS_BASE - 12;
      
-        unit32_t * argument_value_pointers_array[numOfArguments];
+        uint32_t * argument_value_pointers_array[numOfArguments];
        
-       int i = numberOfArguments -1;
+       int i = numOfArguments -1;
        while (i >= 0)
        {
           *esp = *esp - sizeof(char) * (strlen(NameThenArguments[i]) + 1);
@@ -482,7 +482,7 @@ setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20])
        
        *esp = *esp -4;
        
-       i = numberOfArguments -1;
+       i = numOfArguments -1;
        while( i >= 0)
        { 
           (*(uint32_t **) (*esp)) = argument_value_pointers_array[i];
