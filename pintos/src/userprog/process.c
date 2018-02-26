@@ -205,7 +205,7 @@ static bool load_segment (struct file *file, off_t ofs, uint8_t *upage,
                           bool writable);
 
 /* Loads an ELF executable from FILE_NAME into the current thread.
-   Stores the executable's entry point into *EIP
+   Stores the executable's entry point into *EIP_w
    and its initial stack pointer into *ESP.
    Returns true if successful, false otherwise. */
 bool
@@ -223,9 +223,28 @@ load (const char *file_name, void (**eip) (void), void **esp)
   if (t->pagedir == NULL) 
     goto done;
   process_activate ();
+   
+   char *strTokenPointer;
+   char *afterTokenPoiner;
+   
+   
+   char *NameThenArguments[20];
+   int numOfArguments = 0;
+   
+   while(strTokenPointer != NULL)
+   {
+      strTokenPointer = strtok_r(char *) file_name, " ", &afterTokenPointer);
+      
+      NameThenArguments[numOfArguments] = strTokenPointer;
+      numOfArguments++;
+      
+      strTokenPointer = strtok_r(NULL, " ", &afterTokenPointer);
+   }
+   
+   
 
   /* Open executable file. */
-  file = filesys_open (file_name);
+  file = filesys_open (NameThenArguments[0]);
   if (file == NULL) 
     {
       printf ("load: %s: open failed\n", file_name);
