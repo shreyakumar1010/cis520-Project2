@@ -198,7 +198,9 @@ struct Elf32_Phdr
 #define PF_W 2          /* Writable. */
 #define PF_R 4          /* Readable. */
 
-static bool setup_stack (void **esp);
+//Added arguments to setup stack
+static bool setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20]);
+
 static bool validate_segment (const struct Elf32_Phdr *, struct file *);
 static bool load_segment (struct file *file, off_t ofs, uint8_t *upage,
                           uint32_t read_bytes, uint32_t zero_bytes,
@@ -449,7 +451,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
 /* Create a minimal stack by mapping a zeroed page at the top of
    user virtual memory. */
 static bool
-setup_stack (void **esp) 
+setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20]) 
 {
   uint8_t *kpage;
   bool success = false;
@@ -459,6 +461,8 @@ setup_stack (void **esp)
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
       if (success)
+         
+         //Offsetting phys_base as instructed in project 2
         *esp = PHYS_BASE - 12;
       else
         palloc_free_page (kpage);
