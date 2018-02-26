@@ -225,7 +225,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   process_activate ();
    
    char *strTokenPointer;
-   char *afterTokenPoiner;
+   char *afterTokenPointer;
    
    
    char *NameThenArguments[20];
