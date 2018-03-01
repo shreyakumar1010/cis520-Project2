@@ -43,8 +43,30 @@ bool userAddressValid (void * virtualAddress, struct thread * t)
 }
 
 static void
-syscall_handler (struct intr_frame *f UNUSED) 
+syscall_handler (struct intr_frame *f) 
 {
+  esp = f->esp;
+  
   printf ("system call!\n");
   thread_exit ();
+}
+
+void halt (void)
+{
+  shutdown_power_off();
+}
+
+void exit (int status)
+{
+
+}
+
+pid_t exec (const char * cmd_line)
+{
+
+}
+
+int wait (pid_t pid)
+{
+    return (process_wait (pid));
 }
