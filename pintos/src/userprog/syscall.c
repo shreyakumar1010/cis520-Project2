@@ -30,6 +30,18 @@ static bool put_user (uint8_t *udst, uint8_t byte)
     return error_code != -1;
 }
 
+// Validates the user address
+bool userAddressValid (void * virtualAddress, struct thread * t)
+{
+    if (pagedir_get_page(t->pagedir, virtualAddress)!= NULL)
+    {
+        if (is_user_vaddr(virtualAddress))
+            return true;
+    }
+    else
+        return false; 
+}
+
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
