@@ -56,9 +56,9 @@ void halt (void)
   shutdown_power_off();
 }
 
-void exit (int status)
+void exit (int status, struct thread *t)
 {
-
+  
 }
 
 pid_t exec (const char * cmd_line)
