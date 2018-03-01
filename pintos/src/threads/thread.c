@@ -181,6 +181,8 @@ tid_t thread_create (const char *name, int priority, thread_func *function, void
   init_thread (t, name, priority);
   tid = t->tid = allocate_tid ();
   enum intr_level old_level = intr_disable();
+  
+  t-> parent = thread_current();
 
   /* Stack frame for kernel_thread(). */
   kf = alloc_frame (t, sizeof *kf);
