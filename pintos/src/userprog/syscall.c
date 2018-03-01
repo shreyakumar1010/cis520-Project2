@@ -58,7 +58,10 @@ void halt (void)
 
 void exit (int status, struct thread *t)
 {
-  
+    if(thread_alive(t->parent))
+        t->cp->status = status;
+    thread_exit();
+       
 }
 
 pid_t exec (const char * cmd_line)
