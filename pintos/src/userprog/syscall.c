@@ -45,7 +45,7 @@ bool userAddressValid (void * virtualAddress, struct thread * t)
 static void
 syscall_handler (struct intr_frame *f) 
 {
-  esp = f->esp;
+  int *sp = f->esp;
   
   //if the stack pointer isn't valid, exit with a status of -1
   if(!userAddressValid(esp, thread_current()))
@@ -60,11 +60,11 @@ syscall_handler (struct intr_frame *f)
 switch(syscall_id)
 {
   case SYS_EXEC:
-	if(!userAddressValid(p+1) || !userAddressValid(*(p+1)))
+	if(!userAddressValid(sp+1) || !userAddressValid(*(sp+1)))
         { 
  	  kill();
 	}
-	f->eax = exec(*(p+1));
+	f->eax = exec(*(sp+1));
 	break;
 
   case SYS_HALT:
@@ -72,88 +72,88 @@ switch(syscall_id)
 	break;
 
   case SYS_EXIT:
-	if(!userAddressValid(p+1))
+	if(!userAddressValid(sp+1))
 	{
  	  kill();
 	}
-	exit(*(p+1));
+	exit(*(sp+1));
 	break;
 
   case SYS_WAIT:
-      if(!userAddressValid(p+1))
+      if(!userAddressValid(sp+1))
       {
         kill(); 
       }
-      f->eax = wait(*(p+1));
+      f->eax = wait(*(sp+1));
       break;
     
   case SYS_CREATE:
-      if(!userAddressValid(p+4) || !userAddressValid(p+5) || !userAddressValid(*(p+4)))
+      if(!userAddressValid(sp+4) || !userAddressValid(sp+5) || !userAddressValid(*(sp+4)))
       {
         kill();
       }
-      f->eax = create (*(p+4), *(p+5));
+      f->eax = create (*(sp+4), *(sp+5));
       break;
     
     case SYS_REMOVE:
-      if(!userAddressValid(p+1) || !userAddressValid(*(p+1)))
+      if(!userAddressValid(sp+1) || !userAddressValid(*(sp+1)))
 	{
         kill();
 	}
-      f->eax = remove(*(p+1));
+      f->eax = remove(*(sp+1));
       break;
     
     case SYS_OPEN:
-      if(!userAddressValid (p+1) || !userAddressValid(*(p+1)))
+      if(!userAddressValid (sp+1) || !userAddressValid(*(sp+1)))
 	{
         kill();
 	}
-      f->eax = open (*(p+1));
+      f->eax = open (*(sp+1));
       break;
    
     case SYS_FILESIZE:
-      if (!userAddressValid(p+1))
+      if (!userAddressValid(sp+1))
 	{
         kill();
 	}
-      f->eax = filesize(*(p+1));
+      f->eax = filesize(*(sp+1));
       break;
 
     case SYS_READ:
-      if (!userAddressValid(p+5) || !userAddressValid (p+6) || !userAddressValid (p+7) || !userAddressValid (*(p+6)))
+      if (!userAddressValid(sp+5) || !userAddressValid (sp+6) || !userAddressValid (sp+7) || !userAddressValid (*(sp+6)))
 	{
         kill();
 	}
-      f->eax=read(*(p+5),*(p+6),*(p+7));
+      f->eax=read(*(sp+5),*(sp+6),*(sp+7));
       break;
 		
     case SYS_WRITE:
-      if (!userAddressValid(p+5) || !userAddressValid(p+6) || !userAddressValid (p+7)|| !userAddressValid(*(p+6)))
+      if (!userAddressValid(sp+5) || !userAddressValid(sp+6) || !userAddressValid (sp+7)|| !userAddressValid(*(sp+6)))
 	{
         kill();
 	}
-      f->eax = write(*(p+5),*(p+6),*(p+7));
+      f->eax = write(*(sp+5),*(sp+6),*(sp+7));
       break;
     
     case SYS_SEEK:
-      if(!userAddressValid(p+4) || !userAddressValid(p+5))
+      if(!userAddressValid(sp+4) || !userAddressValid(sp+5))
 	{
         kill();
 	}
-      seek(*(p+4),*(p+5));
+      seek(*(sp+4),*(sp+5));
       break;
     
 	
     case SYS_TELL:
-      if(!userAddressValid(p+1))
+      if(!userAddressValid(sp+1))
 	{
         kill();
 	}
-      f->eax = tell(*(p+1));
+      f->eax = tell(*(sp+1));
       break;
 		
     case SYS_CLOSE:
-      if (!userAddressValid(p+1))
+      if (!userAddressValid(sp+1))
 	{
         kill();
 	}
@@ -161,7 +161,7 @@ switch(syscall_id)
       break;
     
     default:
-      hex_dump(p,p,64,true);
+      hex_dump(sp,sp,64,true);
       printf("Invalid SysCall ID\n");
       kill();   
    
