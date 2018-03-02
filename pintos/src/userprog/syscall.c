@@ -47,8 +47,13 @@ syscall_handler (struct intr_frame *f)
 {
   esp = f->esp;
   
-  printf ("system call!\n");
-  thread_exit ();
+  //if the stack pointer isn't valid, exit with a status of -1
+  if(!userAddressValid(esp, thread_current()))
+      exit(-1, thread_current());
+  
+  
+  //printf ("system call!\n");
+  //thread_exit ();
 }
 
 void halt (void)
