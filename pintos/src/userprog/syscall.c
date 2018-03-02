@@ -51,7 +51,7 @@ syscall_handler (struct intr_frame *f)
   if(!userAddressValid(esp, thread_current()))
       exit(-1, thread_current());
   
-  
+  int syscall_id = *p;
   //printf ("system call!\n");
   //thread_exit ();
 }
