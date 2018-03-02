@@ -667,48 +667,6 @@ void donate_priority(struct thread *t)
 	  
   }
 }
-  //while(numNestedDonation <= MAX_NESTED_DONATION_LEVEL)//loop through for nested donations
-  /*while(true)
-  {     
-    //maybe check to be sure the thread priority is set and determined
-    ASSERT(intr_get_level()==INTR_OFF);
-    //assert if its not a thread.
-    ASSERT(is_thread(t));
-	
-    calculate_and_set_priority(t);
-    
-    //  if this thread is locked to another thread
-    if(t->waiting_for != NULL) 
-    {         
-	       
-
-      //selects thread that is being waited for aka the one holding the lock
-      struct thread *threadHoldingLock = t->waiting_for->holder; 
-      ASSERT(threadHoldingLock!=t);
-      // if this is not the current thread then it has already donated, we should undo that donation
-	    
-      //priority change happens in calculate_and_set_priority
-      if(threadHoldingLock != NULL)
-      { 
-         calculate_and_set_priority(threadHoldingLock);
-	 ASSERT(is_thread(threadHoldingLock));
-        
-        //add this donation to the list_of_priority_donations
-        list_insert_ordered(&threadHoldingLock->list_of_priority_donations,&threadHoldingLock->donated_elem, (list_less_func *) &true_if_higher_priority, NULL);
-
-        //now set t to be the threadHoldingLock to nest
-        t = threadHoldingLock;
-
-        //increment numNestedDonations
-      // numNestedDonation++;
-      }
-      else {break;} // threadHoldingLock is NULL
-    }
-    else {break;} //thread has no threadHoldingLock
-    
-  }*/
-  
-
 
 void calculate_and_set_priority(struct thread *t)
 {
@@ -720,8 +678,6 @@ void calculate_and_set_priority(struct thread *t)
     struct thread *topOfDonationList = list_entry(list_front(&t->list_of_priority_donations), struct thread, donated_elem);
 
     
-  
-
   //now we determine if the dontated priority is higher than the initial priority
   if(topOfDonationList->priority > t->initial_priority)
   {
