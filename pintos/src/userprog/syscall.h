@@ -11,7 +11,7 @@ bool userAddressValid (void * virtualAddress, struct thread *t);
 void hald (void);
 void exit (int status, struct thread *t);
 tid_t exec (const char * cmd_line);
-int wait (pid_t pid);
+int wait (tid_t tid);
 
 bool create(const char * file, unsigned initial_size);
 bool remove(const char * file);
