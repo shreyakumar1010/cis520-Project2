@@ -119,13 +119,13 @@ syscall_handler (struct intr_frame *f)
 	
     		case SYS_TELL:
       			if(!userAddressValid(sp+1, thread_current()))
-        			sysexit();
+        			sysexit(-1, thread_current());
       			f->eax = tell(*(sp+1));
       		break;
 		
     		case SYS_CLOSE:
       			if (!userAddressValid(sp+1, thread_current()))
-        			sysexit();
+        			sysexit(-1, thread_current());
       			close(*(sp+1));
       		break;
     
