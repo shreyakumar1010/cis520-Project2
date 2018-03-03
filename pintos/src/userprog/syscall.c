@@ -41,7 +41,7 @@ syscall_handler (struct intr_frame *f)
   
   //if the stack pointer isn't valid, exit with a status of -1
   if(!userAddressValid(sp, thread_current()))
-      sysexit(-1, thread_current());
+      sys_exit(-1, thread_current());
   
   int syscall_id = *sp;
   //printf ("system call!\n");
@@ -53,47 +53,47 @@ syscall_handler (struct intr_frame *f)
   		case SYS_EXEC:
 			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid((void *)(sp+1), thread_current()))
  	  			sysexit(-1, thread_current());
-			f->eax = exec((void *)(sp+1));
+			f->eax = sys_exec((void *)(sp+1));
 		break;
 
   		case SYS_HALT:
-			halt();
+			sys_halt();
 		break;
 
   		case SYS_EXIT:
 			if(!userAddressValid(sp+1, thread_current()))
  	  			sysexit(-1, thread_current());
-			sysexit(*(sp+1), thread_current());
+			sys_exit(*(sp+1), thread_current());
 		break;
 
   		case SYS_WAIT:
       			if(!userAddressValid(sp+1, thread_current()))
         			sysexit(-1, thread_current()); 
-      			f->eax = wait(*(sp+1), thread_current());
+      			f->eax = sys_wait(*(sp+1), thread_current());
       		break;
     
   		case SYS_CREATE:
       			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()) 
 			   					     || !userAddressValid((void *)(sp+4), thread_current()))
         			sysexit(-1, thread_current());
-      			f->eax = create ((void*)(sp+4), *(sp+5));
+      			f->eax = sys_create ((void*)(sp+4), *(sp+5));
       		break;
     
     		case SYS_REMOVE:
       			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid((void *)(sp+1), thread_current()))
         			sysexit(-1, thread_current());
-      			f->eax = remove((void *)(sp+1));
+      			f->eax = sys_remove((void *)(sp+1));
       		break;
     
     		case SYS_OPEN:
       			if(!userAddressValid (sp+1, thread_current()) || !userAddressValid((void *)(sp+1), thread_current()))
         			sysexit(-1, thread_current());
-      			f->eax = open ((void *)(sp+1));
+      			f->eax = sys_open ((void *)(sp+1));
       		break;
    
     		case SYS_FILESIZE:
       			if (!userAddressValid(sp+1, thread_current()))
-        			sysexit(-1, thread_current());
+        			sys_exit(-1, thread_current());
       			f->eax = filesize(*(sp+1));
       		break;
 
@@ -101,52 +101,52 @@ syscall_handler (struct intr_frame *f)
       			if (!userAddressValid(sp+5, thread_current()) || !userAddressValid (sp+6, thread_current()) 
 			    			                      || !userAddressValid (sp+7, thread_current()) 
 			    					      || !userAddressValid ((void *)(sp+6), thread_current()))
-        			sysexit(-1, thread_current());
-      			f->eax=read(*(sp+5),(void *)(sp+6),*(sp+7));
+        			sys_exit(-1, thread_current());
+      			f->eax=sys_read(*(sp+5),(void *)(sp+6),*(sp+7));
       		break;
 		
     		case SYS_WRITE:
       			if (!userAddressValid(sp+5, thread_current()) || !userAddressValid(sp+6, thread_current()) 
 			    				              || !userAddressValid (sp+7, thread_current())
 			    					      || !userAddressValid((void *)(sp+6), thread_current()))
-        			sysexit(-1, thread_current());
-      			f->eax = write(*(sp+5),(void *)(sp+6),*(sp+7));
+        			sys_exit(-1, thread_current());
+      			f->eax = sys_write(*(sp+5),(void *)(sp+6),*(sp+7));
       		break;
     
     		case SYS_SEEK:
       			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()))
-        			sysexit(-1, thread_current());
+        			sys_exit(-1, thread_current());
       		seek(*(sp+4),*(sp+5));
       		break;
     
 	
     		case SYS_TELL:
       			if(!userAddressValid(sp+1, thread_current()))
-        			sysexit(-1, thread_current());
-      			f->eax = tell(*(sp+1));
+        			sys_exit(-1, thread_current());
+      			f->eax = sys_tell(*(sp+1));
       		break;
 		
     		case SYS_CLOSE:
       			if (!userAddressValid(sp+1, thread_current()))
-        			sysexit(-1, thread_current());
+        			sys_exit(-1, thread_current());
       			close(*(sp+1));
       		break;
     
     		default:
       			hex_dump((int)sp, sp, 64, true);
       			printf("Invalid SysCall ID\n");
-      			sysexit(-1, thread_current());   
+      			sys_exit(-1, thread_current());   
    
     		break;
 	}
 }
 
-void halt (void)
+void sys_halt (void)
 {
   shutdown_power_off();
 }
 
-void sysexit (int status, struct thread *t)
+void sys_exit (int status, struct thread *t)
 {
     //if(thread_alive(t->parent))
         //t->cp->status = status;
@@ -154,7 +154,7 @@ void sysexit (int status, struct thread *t)
        
 }
 
-pid_t exec (const char * cmd_line)
+pid_t sys_exec (const char * cmd_line)
 {
 	lock_acquire(&file_sys_lock);
 	tid_t tid = process_execute(cmd_line);
@@ -162,7 +162,7 @@ pid_t exec (const char * cmd_line)
 	return (tid);
 }
 
-int wait (tid_t tid, struct thread * t)
+int sys_wait (tid_t tid, struct thread * t)
 {
 	struct child * child = get_child(tid, t);
 	if(list_empty(&t->children) || (child == NULL))
@@ -179,7 +179,7 @@ int wait (tid_t tid, struct thread * t)
     	return (savehiscookies);
 }
 
-bool create (const char * file, unsigned initial_size)
+bool sys_create (const char * file, unsigned initial_size)
 {
 	if(file !=NULL)
 	{
@@ -190,42 +190,42 @@ bool create (const char * file, unsigned initial_size)
 	return (false);
 }
 
-bool remove (const char * file)
+bool sys_remove (const char * file)
 {
 	return (false);
 }
 
-int open (const char * file) 
+int sys_open (const char * file) 
 {
 	return (-1);
 }
 
-int filesize (int fd)
+int sys_filesize (int fd)
 {
 	return (-1);
 }
 
-int read (int fd, void * buffer, unsigned size)
+int sys_read (int fd, void * buffer, unsigned size)
 {
 	return (-1);
 }
 
-int write (int fd, const void * buffer, unsigned size)
+int sys_write (int fd, const void * buffer, unsigned size)
 {
 	return (-1);
 }
 
-void seek (int fd, unsigned position)
+void sys_seek (int fd, unsigned position)
 {
 	
 }
 
-unsigned tell (int fd)
+unsigned sys_tell (int fd)
 {
 
 }
 
-void close (int fd)
+void sys_close (int fd)
 {
 
 }
