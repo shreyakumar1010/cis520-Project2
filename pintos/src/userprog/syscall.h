@@ -3,6 +3,7 @@
 #include stdio.h
 #include "lib/kernel/list.h"
 #include <sys/types.h>
+#include "process.h"
 
 void syscall_init (void);
 
