@@ -122,8 +122,8 @@ struct thread
 struct child 
 {
   tid_t id;
+  bool dirty;
   int return_value;
-  int dirty;
   struct list_elem childelem;
 };
 
