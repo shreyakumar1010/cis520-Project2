@@ -9,7 +9,7 @@ bool userAddressValid (void * virtualAddress, struct thread *t);
 void halt (void);
 void sysexit (int status, struct thread *t); //renamed from exit to sysexit
 tid_t exec (const char * cmd_line);
-int wait (tid_t tid);
+int wait (tid_t tid, struct thread * t);
 //static int get_user(const uint8_t *uaddr);
 //static bool put_user(uint8_t *udst, uint8_t byte);
 
