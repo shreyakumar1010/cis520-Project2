@@ -10,7 +10,7 @@
 #include "filesys/filesys.h"
 #include <user/syscall.h>
 
-+struct lock file_sys_lock;
+struct lock file_sys_lock;
 static void syscall_handler (struct intr_frame *);
 
 void
