@@ -117,6 +117,8 @@ struct thread
    //for UserPROG
    struct thread *parent;
    struct list children;
+   struct semaphore child_semaphore;
+   tid_t kid_being_waited_on;
   };
 
 struct child 
