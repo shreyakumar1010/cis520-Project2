@@ -206,12 +206,7 @@ void close (int fd)
 {
 
 }
-//FIX THIS BEFORE SUBMIT
-/* Checks if the user address is valid */
-bool valid (void * vaddr);
-/* Calls exit with -1 status */
-void kill (void);
-/* Returns file * equivalent to file descriptor */
+
 struct file_desc * get_file(int);
 
 
