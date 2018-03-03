@@ -50,7 +50,7 @@ syscall_handler (struct intr_frame *f)
   		case SYS_EXEC:
 			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid((void *)(sp+1), thread_current()))
  	  			sysexit(-1, thread_current());
-			f->eax = exec(*(sp+1));
+			f->eax = exec((void *)(sp+1));
 		break;
 
   		case SYS_HALT:
@@ -73,19 +73,19 @@ syscall_handler (struct intr_frame *f)
       			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()) 
 			   					     || !userAddressValid((void *)(sp+4), thread_current()))
         			sysexit(-1, thread_current());
-      			f->eax = create (*(sp+4), *(sp+5));
+      			f->eax = create ((void*)(sp+4), (void *)(sp+5));
       		break;
     
     		case SYS_REMOVE:
       			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid((void *)(sp+1), thread_current()))
         			sysexit(-1, thread_current());
-      			f->eax = remove(*(sp+1));
+      			f->eax = remove((void *)(sp+1));
       		break;
     
     		case SYS_OPEN:
       			if(!userAddressValid (sp+1, thread_current()) || !userAddressValid((void *)(sp+1), thread_current()))
         			sysexit(-1, thread_current());
-      			f->eax = open (*(sp+1));
+      			f->eax = open ((void *)(sp+1));
       		break;
    
     		case SYS_FILESIZE:
@@ -99,7 +99,7 @@ syscall_handler (struct intr_frame *f)
 			    			                      || !userAddressValid (sp+7, thread_current()) 
 			    					      || !userAddressValid ((void *)(sp+6), thread_current()))
         			sysexit(-1, thread_current());
-      			f->eax=read(*(sp+5),*(sp+6),*(sp+7));
+      			f->eax=read((void *)(sp+5),(void *)(sp+6),(void *)(sp+7));
       		break;
 		
     		case SYS_WRITE:
@@ -107,7 +107,7 @@ syscall_handler (struct intr_frame *f)
 			    				              || !userAddressValid (sp+7, thread_current())
 			    					      || !userAddressValid((void *)(sp+6), thread_current()))
         			sysexit(-1, thread_current());
-      			f->eax = write(*(sp+5),*(sp+6),*(sp+7));
+      			f->eax = write((void *)(sp+5),(void *)(sp+6),(void *)(sp+7));
       		break;
     
     		case SYS_SEEK:
