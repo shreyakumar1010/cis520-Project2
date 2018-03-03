@@ -1,7 +1,6 @@
 #include "userprog/syscall.h"
 #include <stdio.h>
 #include <syscall-nr.h>
-#include <unistd.h>
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 
@@ -52,7 +51,7 @@ syscall_handler (struct intr_frame *f)
   if(!userAddressValid(esp, thread_current()))
       exit(-1, thread_current());
   
-  int syscall_id = *p;
+  int syscall_id = *sp;
   //printf ("system call!\n");
   //thread_exit ();
 
