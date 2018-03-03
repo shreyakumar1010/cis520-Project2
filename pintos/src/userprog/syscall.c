@@ -61,9 +61,7 @@ switch(syscall_id)
 {
   case SYS_EXEC:
 	if(!userAddressValid(sp+1) || !userAddressValid(*(sp+1)))
-        { 
  	  kill();
-	}
 	f->eax = exec(*(sp+1));
 	break;
 
@@ -73,73 +71,55 @@ switch(syscall_id)
 
   case SYS_EXIT:
 	if(!userAddressValid(sp+1))
-	{
  	  kill();
-	}
 	exit(*(sp+1));
 	break;
 
   case SYS_WAIT:
       if(!userAddressValid(sp+1))
-      {
         kill(); 
-      }
       f->eax = wait(*(sp+1));
       break;
     
   case SYS_CREATE:
       if(!userAddressValid(sp+4) || !userAddressValid(sp+5) || !userAddressValid(*(sp+4)))
-      {
         kill();
-      }
       f->eax = create (*(sp+4), *(sp+5));
       break;
     
     case SYS_REMOVE:
       if(!userAddressValid(sp+1) || !userAddressValid(*(sp+1)))
-	{
         kill();
-	}
       f->eax = remove(*(sp+1));
       break;
     
     case SYS_OPEN:
       if(!userAddressValid (sp+1) || !userAddressValid(*(sp+1)))
-	{
         kill();
-	}
       f->eax = open (*(sp+1));
       break;
    
     case SYS_FILESIZE:
       if (!userAddressValid(sp+1))
-	{
         kill();
-	}
       f->eax = filesize(*(sp+1));
       break;
 
     case SYS_READ:
       if (!userAddressValid(sp+5) || !userAddressValid (sp+6) || !userAddressValid (sp+7) || !userAddressValid (*(sp+6)))
-	{
         kill();
-	}
       f->eax=read(*(sp+5),*(sp+6),*(sp+7));
       break;
 		
     case SYS_WRITE:
       if (!userAddressValid(sp+5) || !userAddressValid(sp+6) || !userAddressValid (sp+7)|| !userAddressValid(*(sp+6)))
-	{
         kill();
-	}
       f->eax = write(*(sp+5),*(sp+6),*(sp+7));
       break;
     
     case SYS_SEEK:
       if(!userAddressValid(sp+4) || !userAddressValid(sp+5))
-	{
         kill();
-	}
       seek(*(sp+4),*(sp+5));
       break;
     
