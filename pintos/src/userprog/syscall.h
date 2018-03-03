@@ -2,6 +2,7 @@
 #define USERPROG_SYSCALL_H
 #include stdio.h
 #include "lib/kernel/list.h"
+#include <sys/types.h>
 
 void syscall_init (void);
 
