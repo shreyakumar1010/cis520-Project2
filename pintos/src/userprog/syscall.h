@@ -7,7 +7,7 @@ void syscall_init (void);
 
 bool userAddressValid (void * virtualAddress, struct thread *t);
 void halt (void);
-void sysexit (int status, struct thread *t);
+void sysexit (int status, struct thread *t); //renamed from exit to sysexit
 tid_t exec (const char * cmd_line);
 int wait (tid_t tid);
 //static int get_user(const uint8_t *uaddr);
