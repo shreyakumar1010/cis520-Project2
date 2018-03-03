@@ -4,7 +4,6 @@
 #include "threads/interrupt.h"
 #include <stdio.h>
 #include <syscall-nr.h>
-#include <unistd.h>
 
 void syscall_init (void);
 
