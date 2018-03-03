@@ -8,6 +8,7 @@
 #include "threads/vaddr.h"
 #include "devices/shutdown.h"
 #include "filesys/filesys.h"
+#include "src/lib/user/syscall.h"
 
 static void syscall_handler (struct intr_frame *);
 
@@ -151,10 +152,10 @@ void sysexit (int status, struct thread *t)
        
 }
 
-tid_t exec (const char * cmd_line)
+pid_t exec (const char * cmd_line)
 {
-  tid_t tid = 0;
-  return tid;
+  //tid_t tid = 0;
+  //return tid;
 }
 
 int wait (tid_t tid)
