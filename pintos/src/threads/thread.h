@@ -119,6 +119,14 @@ struct thread
    struct list children;
   };
 
+struct child 
+{
+  tid_t id;
+  int return_value;
+  int dirty;
+  struct list_elem childelem;
+};
+
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
