@@ -1,5 +1,7 @@
 #ifndef USERPROG_SYSCALL_H
 #define USERPROG_SYSCALL_H
+#include stdio.h
+#include "lib/kernel/list.h"
 
 void syscall_init (void);
 
