@@ -172,11 +172,11 @@ int wait (tid_t tid, struct thread * t)
 	
 	if (child->dirty == false)
 		sema_down(&t->child_semaphore);
-	savehiscookies = child->cookies; //we want the kid's cookies, but not the kid
+	int savehiscookies = child->cookies; //we want the kid's cookies, but not the kid
 	list_remove(&child->childelem);
 	free(child); //be free, son!
 	
-    	return (cookies);
+    	return (savehiscookies);
 }
 
 bool create (const char * file, unsigned initial_size)
