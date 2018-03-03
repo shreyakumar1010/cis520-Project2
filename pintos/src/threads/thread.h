@@ -125,7 +125,7 @@ struct child
 {
   tid_t id;
   bool dirty;
-  int return_value;
+  int cookies; //return value
   struct list_elem childelem;
 };
 
