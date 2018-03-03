@@ -8,7 +8,7 @@
 #include "threads/vaddr.h"
 #include "devices/shutdown.h"
 #include "filesys/filesys.h"
-#include "src/lib/user/syscall.h"
+#include <user/syscall.h>
 
 static void syscall_handler (struct intr_frame *);
 
