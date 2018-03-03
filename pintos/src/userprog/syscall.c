@@ -59,7 +59,7 @@ syscall_handler (struct intr_frame *f)
 	switch(syscall_id)
 	{
   		case SYS_EXEC:
-			if(!userAddressValid(sp+1) || !userAddressValid(*(sp+1)))
+			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid(*(sp+1), thread_current()))
  	  			kill();
 			f->eax = exec(*(sp+1));
 		break;
@@ -69,68 +69,73 @@ syscall_handler (struct intr_frame *f)
 		break;
 
   		case SYS_EXIT:
-			if(!userAddressValid(sp+1))
+			if(!userAddressValid(sp+1), thread_current())
  	  			kill();
 			exit(*(sp+1));
 		break;
 
   		case SYS_WAIT:
-      			if(!userAddressValid(sp+1))
+      			if(!userAddressValid(sp+1), thread_current())
         			kill(); 
       			f->eax = wait(*(sp+1));
       		break;
     
   		case SYS_CREATE:
-      			if(!userAddressValid(sp+4) || !userAddressValid(sp+5) || !userAddressValid(*(sp+4)))
+      			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()) 
+			   					     || !userAddressValid(*(sp+4), thread_current()))
         			kill();
       			f->eax = create (*(sp+4), *(sp+5));
       		break;
     
     		case SYS_REMOVE:
-      			if(!userAddressValid(sp+1) || !userAddressValid(*(sp+1)))
+      			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid(*(sp+1), thread_current()))
         			kill();
       			f->eax = remove(*(sp+1));
       		break;
     
     		case SYS_OPEN:
-      			if(!userAddressValid (sp+1) || !userAddressValid(*(sp+1)))
+      			if(!userAddressValid (sp+1, thread_current()) || !userAddressValid(*(sp+1), thread_current()))
         			kill();
       			f->eax = open (*(sp+1));
       		break;
    
     		case SYS_FILESIZE:
-      			if (!userAddressValid(sp+1))
+      			if (!userAddressValid(sp+1, thread_current()))
         			kill();
       			f->eax = filesize(*(sp+1));
       		break;
 
     		case SYS_READ:
-      			if (!userAddressValid(sp+5) || !userAddressValid (sp+6) || !userAddressValid (sp+7) || !userAddressValid (*(sp+6)))
+      			if (!userAddressValid(sp+5, thread_current()) || !userAddressValid (sp+6, thread_current()) 
+			    			                      || !userAddressValid (sp+7, thread_current()) 
+			    					      || !userAddressValid (*(sp+6), thread_current()))
         			kill();
       			f->eax=read(*(sp+5),*(sp+6),*(sp+7));
       		break;
 		
     		case SYS_WRITE:
-      			if (!userAddressValid(sp+5) || !userAddressValid(sp+6) || !userAddressValid (sp+7)|| !userAddressValid(*(sp+6)))
+      			if (!userAddressValid(sp+5, thread_current()) || !userAddressValid(sp+6, thread_current()) 
+			    				              || !userAddressValid (sp+7, thread_current())
+			    					      || !userAddressValid(*(sp+6), thread_current()))
         			kill();
       			f->eax = write(*(sp+5),*(sp+6),*(sp+7));
       		break;
     
     		case SYS_SEEK:
-      			if(!userAddressValid(sp+4) || !userAddressValid(sp+5))
+      			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()))
         			kill();
       		seek(*(sp+4),*(sp+5));
       		break;
     
 	
     		case SYS_TELL:
-      			if(!userAddressValid(sp+1))
+      			if(!userAddressValid(sp+1, thread_current()))
         			kill();
       			f->eax = tell(*(sp+1));
       		break;
 		
     		case SYS_CLOSE:
-      			if (!userAddressValid(sp+1))
+      			if (!userAddressValid(sp+1, thread_current()))
         			kill();
       			close(*(sp+1));
       		break;
@@ -151,8 +156,8 @@ void halt (void)
 
 void exit (int status, struct thread *t)
 {
-    if(thread_alive(t->parent))
-        t->cp->status = status;
+    //if(thread_alive(t->parent))
+        //t->cp->status = status;
     thread_exit();
        
 }
