@@ -44,6 +44,8 @@ bool userAddressValid (void * virtualAddress, struct thread * t)
     {
         if (is_user_vaddr(virtualAddress))
             return true;
+	else 
+	    return false;
     }
     else
         return false; 
