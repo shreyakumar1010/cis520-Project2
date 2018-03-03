@@ -49,7 +49,7 @@ syscall_handler (struct intr_frame *f)
 	{
   		case SYS_EXEC:
 			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid(*(sp+1), thread_current()))
- 	  			kill();
+ 	  			sysexit(-1, thread_current());
 			f->eax = exec(*(sp+1));
 		break;
 
@@ -59,38 +59,38 @@ syscall_handler (struct intr_frame *f)
 
   		case SYS_EXIT:
 			if(!userAddressValid(sp+1, thread_current()))
- 	  			kill();
+ 	  			sysexit(-1, thread_current());
 			sysexit(*(sp+1), thread_current());
 		break;
 
   		case SYS_WAIT:
       			if(!userAddressValid(sp+1, thread_current()))
-        			kill(); 
+        			sysexit(-1, thread_current()); 
       			f->eax = wait(*(sp+1));
       		break;
     
   		case SYS_CREATE:
       			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()) 
 			   					     || !userAddressValid(*(sp+4), thread_current()))
-        			kill();
+        			sysexit(-1, thread_current());
       			f->eax = create (*(sp+4), *(sp+5));
       		break;
     
     		case SYS_REMOVE:
       			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid(*(sp+1), thread_current()))
-        			kill();
+        			sysexit(-1, thread_current());
       			f->eax = remove(*(sp+1));
       		break;
     
     		case SYS_OPEN:
       			if(!userAddressValid (sp+1, thread_current()) || !userAddressValid(*(sp+1), thread_current()))
-        			kill();
+        			sysexit(-1, thread_current());
       			f->eax = open (*(sp+1));
       		break;
    
     		case SYS_FILESIZE:
       			if (!userAddressValid(sp+1, thread_current()))
-        			kill();
+        			sysexit(-1, thread_current());
       			f->eax = filesize(*(sp+1));
       		break;
 
@@ -98,7 +98,7 @@ syscall_handler (struct intr_frame *f)
       			if (!userAddressValid(sp+5, thread_current()) || !userAddressValid (sp+6, thread_current()) 
 			    			                      || !userAddressValid (sp+7, thread_current()) 
 			    					      || !userAddressValid (*(sp+6), thread_current()))
-        			kill();
+        			sysexit(-1, thread_current());
       			f->eax=read(*(sp+5),*(sp+6),*(sp+7));
       		break;
 		
@@ -106,33 +106,33 @@ syscall_handler (struct intr_frame *f)
       			if (!userAddressValid(sp+5, thread_current()) || !userAddressValid(sp+6, thread_current()) 
 			    				              || !userAddressValid (sp+7, thread_current())
 			    					      || !userAddressValid(*(sp+6), thread_current()))
-        			kill();
+        			sysexit(-1, thread_current());
       			f->eax = write(*(sp+5),*(sp+6),*(sp+7));
       		break;
     
     		case SYS_SEEK:
       			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()))
-        			kill();
+        			sysexit(-1, thread_current());
       		seek(*(sp+4),*(sp+5));
       		break;
     
 	
     		case SYS_TELL:
       			if(!userAddressValid(sp+1, thread_current()))
-        			kill();
+        			sysexit();
       			f->eax = tell(*(sp+1));
       		break;
 		
     		case SYS_CLOSE:
       			if (!userAddressValid(sp+1, thread_current()))
-        			kill();
+        			sysexit();
       			close(*(sp+1));
       		break;
     
     		default:
       			hex_dump(sp,sp,64,true);
       			printf("Invalid SysCall ID\n");
-      			kill();   
+      			sysexit(-1, thread_current());   
    
     		break;
 	}
