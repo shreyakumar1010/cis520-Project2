@@ -154,8 +154,10 @@ void sysexit (int status, struct thread *t)
 
 pid_t exec (const char * cmd_line)
 {
-  //tid_t tid = 0;
-  //return tid;
+	lock_acquire();
+	tid_t tid = process_execute(cmd_line);
+	lock_release();
+	return (tid);
 }
 
 int wait (tid_t tid)
