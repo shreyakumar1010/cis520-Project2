@@ -23,6 +23,13 @@ void seek(int fd, unsigned position);
 unsigned tell(int fd);
 void close(int fd);
 
+/* A struct to keep file descriptor -> file pointer mapping FIX THIS SHIT*/ 
+struct file_desc
+{
+  struct file * fp;
+  int fd;
+  struct list_elem elem;
+};
 
 
 #endif /* userprog/syscall.h */
