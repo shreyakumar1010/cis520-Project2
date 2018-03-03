@@ -2,7 +2,6 @@
 #define USERPROG_SYSCALL_H
 #include <stdio.h>
 #include "threads/thread.h"
-#include "src/lib/user/syscall.h"
 
 void syscall_init (void);
 
