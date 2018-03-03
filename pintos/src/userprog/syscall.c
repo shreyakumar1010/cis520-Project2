@@ -48,7 +48,7 @@ syscall_handler (struct intr_frame *f)
   int *sp = f->esp;
   
   //if the stack pointer isn't valid, exit with a status of -1
-  if(!userAddressValid(esp, thread_current()))
+  if(!userAddressValid(sp, thread_current()))
       exit(-1, thread_current());
   
   int syscall_id = *sp;
