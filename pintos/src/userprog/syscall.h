@@ -1,6 +1,10 @@
 #ifndef USERPROG_SYSCALL_H
 #define USERPROG_SYSCALL_H
 #include "threads/thread.h"
+#include "threads/interrupt.h"
+#include <stdio.h>
+#include <syscall-nr.h>
+#include <unistd.h>
 
 void syscall_init (void);
 
