@@ -62,7 +62,7 @@ syscall_handler (struct intr_frame *f)
 
   		case SYS_EXIT:
 			if(!userAddressValid(sp+1, thread_current()))
- 	  			sysexit(-1, thread_current());
+ 	  			sys_exit(-1, thread_current());
 			sys_exit(*(sp+1), thread_current());
 		break;
 
