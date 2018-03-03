@@ -69,13 +69,13 @@ syscall_handler (struct intr_frame *f)
 		break;
 
   		case SYS_EXIT:
-			if(!userAddressValid(sp+1), thread_current())
+			if(!userAddressValid(sp+1, thread_current()))
  	  			kill();
-			exit(*(sp+1));
+			exit(*(sp+1), thread_current());
 		break;
 
   		case SYS_WAIT:
-      			if(!userAddressValid(sp+1), thread_current())
+      			if(!userAddressValid(sp+1, thread_current()))
         			kill(); 
       			f->eax = wait(*(sp+1));
       		break;
