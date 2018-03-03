@@ -179,37 +179,37 @@ int wait (tid_t tid)
 
 bool create (const char * file, unsigned initial_size)
 {
-
+	return (false);
 }
 
 bool remove (const char * file)
 {
-
+	return (false);
 }
 
 int open (const char * file) 
 {
-
+	return (-1);
 }
 
 int filesize (int fd)
 {
-
+	return (-1);
 }
 
 int read (int fd, void * buffer, unsigned size)
 {
-
+	return (-1);
 }
 
 int write (int fd, const void * buffer, unsigned size)
 {
-
+	return (-1);
 }
 
 void seek (int fd, unsigned position)
 {
-
+	
 }
 
 unsigned tell (int fd)
