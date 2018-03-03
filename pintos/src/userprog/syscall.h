@@ -10,8 +10,8 @@ void halt (void);
 void sysexit (int status, struct thread *t);
 tid_t exec (const char * cmd_line);
 int wait (tid_t tid);
-static int get_user(const uint8_t *uaddr);
-static bool put_user(uint8_t *udst, uint8_t byte);
+//static int get_user(const uint8_t *uaddr);
+//static bool put_user(uint8_t *udst, uint8_t byte);
 
 bool create(const char * file, unsigned initial_size);
 bool remove(const char * file);
