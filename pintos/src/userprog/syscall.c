@@ -69,7 +69,7 @@ syscall_handler (struct intr_frame *f)
   		case SYS_WAIT:
       			if(!userAddressValid(sp+1, thread_current()))
         			sysexit(-1, thread_current()); 
-      			f->eax = wait(*(sp+1));
+      			f->eax = wait(*(sp+1), thread_current());
       		break;
     
   		case SYS_CREATE:
@@ -162,11 +162,21 @@ pid_t exec (const char * cmd_line)
 	return (tid);
 }
 
-int wait (tid_t tid)
+int wait (tid_t tid, struct thread * t)
 {
-	//working here
+	struct child * child = get_child(tid, t);
+	if(list_empty(&t->children) || (child == NULL))
+		return (-1);
 	
-    return (process_wait (tid));
+	t->kid_being_waited_on = tid;
+	
+	if (child->dirty == false)
+		sema_down(&t->child_semaphore);
+	savehiscookies = child->cookies; //we want the kid's cookies, but not the kid
+	list_remove(&child->childelem);
+	free(child); //be free, son!
+	
+    	return (cookies);
 }
 
 bool create (const char * file, unsigned initial_size)
