@@ -164,7 +164,7 @@ pid_t sys_exec (const char * cmd_line)
 
 int sys_wait (tid_t tid, struct thread * t)
 {
-	struct child child = get_child(tid, t);
+	struct child * child = get_child(tid, t);
 	if(list_empty(&t->children) || (child == NULL))
 		return (-1);
 	
