@@ -158,14 +158,14 @@ void exit (int status, struct thread *t)
        
 }
 
-pid_t exec (const char * cmd_line)
+tid_t exec (const char * cmd_line)
 {
 
 }
 
-int wait (pid_t pid)
+int wait (tid_t tid)
 {
-    return (process_wait (pid));
+    return (process_wait (tid));
 }
 
 bool create (const char * file, unsigned initial_size)
