@@ -126,17 +126,13 @@ switch(syscall_id)
 	
     case SYS_TELL:
       if(!userAddressValid(sp+1))
-	{
         kill();
-	}
       f->eax = tell(*(sp+1));
       break;
 		
     case SYS_CLOSE:
       if (!userAddressValid(sp+1))
-	{
         kill();
-	}
       close(*(p+1));
       break;
     
