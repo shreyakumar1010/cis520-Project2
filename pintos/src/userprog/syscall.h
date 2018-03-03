@@ -23,7 +23,7 @@ void sys_seek(int fd, unsigned position);
 unsigned sys_tell(int fd);
 void sys_close(int fd);
 
-struct child * get_child(tid_t tid, struct thread *t);
+struct child  get_child(tid_t tid, struct thread *t);
 
 /* A struct to keep file descriptor -> file pointer mapping FIX THIS SHIT*/ 
 struct file_desc
