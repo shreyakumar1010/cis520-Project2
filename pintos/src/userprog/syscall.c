@@ -54,7 +54,7 @@ syscall_handler (struct intr_frame *f)
   
   //if the stack pointer isn't valid, exit with a status of -1
   if(!userAddressValid(sp, thread_current()))
-      exit(-1, thread_current());
+      sysexit(-1, thread_current());
   
   int syscall_id = *sp;
   //printf ("system call!\n");
@@ -76,7 +76,7 @@ syscall_handler (struct intr_frame *f)
   		case SYS_EXIT:
 			if(!userAddressValid(sp+1, thread_current()))
  	  			kill();
-			exit(*(sp+1), thread_current());
+			sysexit(*(sp+1), thread_current());
 		break;
 
   		case SYS_WAIT:
@@ -159,7 +159,7 @@ void halt (void)
   shutdown_power_off();
 }
 
-void exit (int status, struct thread *t)
+void sysexit (int status, struct thread *t)
 {
     //if(thread_alive(t->parent))
         //t->cp->status = status;
