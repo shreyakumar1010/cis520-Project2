@@ -10,11 +10,13 @@
 #include "filesys/filesys.h"
 #include <user/syscall.h>
 
++struct lock file_sys_lock;
 static void syscall_handler (struct intr_frame *);
 
 void
 syscall_init (void) 
 {
+   lock_init(&file_sys_lock);
   intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
 }
 
@@ -154,9 +156,9 @@ void sysexit (int status, struct thread *t)
 
 pid_t exec (const char * cmd_line)
 {
-	lock_acquire();
+	lock_acquire(&file_sys_lock);
 	tid_t tid = process_execute(cmd_line);
-	lock_release();
+	lock_release(&file_sys_lock);
 	return (tid);
 }
 
