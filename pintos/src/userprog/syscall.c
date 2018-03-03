@@ -52,7 +52,7 @@ syscall_handler (struct intr_frame *f)
 	{
   		case SYS_EXEC:
 			if(!userAddressValid(sp+1, thread_current()) || !userAddressValid((void *)(sp+1), thread_current()))
- 	  			sysexit(-1, thread_current());
+ 	  			sys_exit(-1, thread_current());
 			f->eax = sys_exec((void *)(sp+1));
 		break;
 
