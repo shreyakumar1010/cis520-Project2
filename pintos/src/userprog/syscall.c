@@ -232,7 +232,7 @@ void sys_close (int fd)
 
 struct file_desc * get_file(int);
 
-child get_child(tid_t tid, struct thread *t){}
+struct child get_child(tid_t tid, struct thread *t){}
 
 
 
