@@ -164,11 +164,19 @@ pid_t exec (const char * cmd_line)
 
 int wait (tid_t tid)
 {
+	//working here
+	
     return (process_wait (tid));
 }
 
 bool create (const char * file, unsigned initial_size)
 {
+	if(file !=NULL)
+	{
+		lock_acquire(&file_sys_lock);
+		//here we will do something else
+		lock_acquire(&file_sys_lock);
+	}
 	return (false);
 }
 
