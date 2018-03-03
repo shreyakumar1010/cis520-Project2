@@ -153,7 +153,8 @@ void sysexit (int status, struct thread *t)
 
 tid_t exec (const char * cmd_line)
 {
-
+  tid_t tid = 0;
+  return tid;
 }
 
 int wait (tid_t tid)
