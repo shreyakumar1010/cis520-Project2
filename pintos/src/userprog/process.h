@@ -6,5 +6,6 @@ tid_t process_execute (const char *file_name_plus_arguments);
 int process_wait (tid_t);
 void process_exit (void);
 void process_activate (void);
+struct child get_child(tid_t tid, struct thread *t);
 
 #endif /* userprog/process.h */
