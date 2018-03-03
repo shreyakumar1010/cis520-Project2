@@ -11,7 +11,7 @@ void exit (int status, struct thread *t);
 pid_t exec (const char * cmd_line);
 int wait (pid_t pid);
 
-bool create(cosnt char * file, unsigned initial_size);
+bool create(const char * file, unsigned initial_size);
 bool remove(const char * file);
 int open(const char * file);
 int filesize(int fd);
