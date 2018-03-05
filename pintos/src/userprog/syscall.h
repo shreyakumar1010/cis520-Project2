@@ -22,6 +22,7 @@ int sys_write(int fd, const void * buffer, unsigned size);
 void sys_seek(int fd, unsigned position);
 unsigned sys_tell(int fd);
 void sys_close(int fd);
+struct file_desc * get_file_desc(int fd, struct thread * t); 
 
 struct child * get_child(tid_t tid, struct thread *t);
 
