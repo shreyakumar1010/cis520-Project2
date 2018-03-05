@@ -236,7 +236,7 @@ int sys_open (const char * file, struct thread * t)
 
 int sys_filesize (int fd)
 {
-	struct file_desc * getit = get_file(fd);
+	struct file_desc * getit = get_file_desc(fd);
 	if(getit != NULL)
 	{
 		lock_acquire(&file_sys_lock);
@@ -259,7 +259,7 @@ int sys_read (int fd, void * buffer, unsigned size)
 		return(size);
 	}
 	
-	struct file_desc * getit = get_file(fd);
+	struct file_desc * getit = get_file_desc(fd);
 	if(getit != NULL)
 	{
 		lock_acquire(&file_sys_lock);
@@ -278,7 +278,7 @@ int sys_write (int fd, const void * buffer, unsigned size)
 		return (size);
 	}
 	
-	struct file_desc * getit = get_file(fd);
+	struct file_desc * getit = get_file_desc(fd);
 	if(getit != NULL)
 	{
 		lock_acquire(&file_sys_lock);
@@ -291,7 +291,7 @@ int sys_write (int fd, const void * buffer, unsigned size)
 
 void sys_seek (int fd, unsigned position)
 {
-	struct file_desc * getit = get_file(fd);
+	struct file_desc * getit = get_file_desc(fd);
 	if(getit != NULL)
 	{
 		lock_acquire(&file_sys_lock);
@@ -302,7 +302,7 @@ void sys_seek (int fd, unsigned position)
 
 unsigned sys_tell (int fd)
 {
-	struct file_desc * getit = get_file(fd);
+	struct file_desc * getit = get_file_desc(fd);
 	if(getit != NULL)
 	{
 		lock_acquire(&file_sys_lock);
@@ -318,7 +318,7 @@ void sys_close (int fd)
 	if(fd == STDOUT_FILENO || fd == STDIN_FILENO)
 		return;
 	
-	struct file_desc * getit = get_file(fd);
+	struct file_desc * getit = get_file_desc(fd);
 	if(getit != NULL)
 	{
 		lock_acquire(&file_sys_lock);
