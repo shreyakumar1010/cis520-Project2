@@ -121,7 +121,7 @@ syscall_handler (struct intr_frame *f)
     		case SYS_SEEK:
       			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()))
         			sys_exit(-1, thread_current());
-      			seek(*(sp+4),*(sp+5));
+      			sys_seek(*(sp+4),*(sp+5));
       		break;
     
 	
@@ -134,7 +134,7 @@ syscall_handler (struct intr_frame *f)
     		case SYS_CLOSE:
       			if (!userAddressValid(sp+1, thread_current()))
         			sys_exit(-1, thread_current());
-      			close(*(sp+1));
+      			sys_close(*(sp+1));
       		break;
     
     		default:
