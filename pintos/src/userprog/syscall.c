@@ -17,8 +17,8 @@ static void syscall_handler (struct intr_frame *);
 void
 syscall_init (void) 
 {
-   lock_init(&file_sys_lock);
-  intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
+	lock_init(&file_sys_lock);
+  	intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
 }
 
 // Validates the user address
@@ -89,7 +89,7 @@ syscall_handler (struct intr_frame *f)
     		case SYS_OPEN:
       			if(!userAddressValid (sp+1, thread_current()) || !userAddressValid((void *)(sp+1), thread_current()))
         			sys_exit(-1, thread_current());
-      			f->eax = sys_open ((void *)(sp+1));
+      			f->eax = sys_open ((void *)(sp+1), thread_current());
       		break;
    
     		case SYS_FILESIZE:
@@ -110,14 +110,16 @@ syscall_handler (struct intr_frame *f)
       			if (!userAddressValid(sp+5, thread_current()) || !userAddressValid(sp+6, thread_current()) 
 			    				              || !userAddressValid (sp+7, thread_current())
 			    					      || !userAddressValid((void *)(sp+6), thread_current()))
+			{
         			sys_exit(-1, thread_current());
+			}
       			f->eax = sys_write(*(sp+5),(void *)(sp+6),*(sp+7));
       		break;
     
     		case SYS_SEEK:
       			if(!userAddressValid(sp+4, thread_current()) || !userAddressValid(sp+5, thread_current()))
         			sys_exit(-1, thread_current());
-      		seek(*(sp+4),*(sp+5));
+      			seek(*(sp+4),*(sp+5));
       		break;
     
 	
@@ -194,11 +196,29 @@ bool sys_create (const char * file, unsigned initial_size)
 
 bool sys_remove (const char * file)
 {
+	if (file!= NULL)
+	{
+		lock_acquire(&file_sys_lock);
+		bool removed = filesys_remove(file);
+		lock_release(&file_sys_lock);
+		return(removed);
+	}
 	return (false);
 }
 
-int sys_open (const char * file) 
+int sys_open (const char * file, struct thread * t) 
 {
+	lock_acquire(&file_sys_lock);
+	struct file * temp = filesys_open(file);
+	lock_release(&file_sys_lock);
+	if(temp!= NULL)
+	{
+		struct file_desc * temp_fd = malloc(sizeof(file_desc));
+		temp_fd->fd = ++t->fd_count;
+		temp_fd->fp = temp;
+		list_push_front(&t->file_list, &temp_fd->elem);
+		return (fd_temp->fd);
+	}
 	return (-1);
 }
 
@@ -225,7 +245,6 @@ void sys_seek (int fd, unsigned position)
 unsigned sys_tell (int fd)
 {
 	return 0;
-
 }
 
 void sys_close (int fd)
@@ -235,7 +254,10 @@ void sys_close (int fd)
 
 struct file_desc * get_file(int);
 
-struct child *  get_child(tid_t tid, struct thread *t){return NULL;}
+struct child *  get_child(tid_t tid, struct thread *t)
+{
+	return NULL;
+}
 
 
 
