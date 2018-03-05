@@ -254,7 +254,7 @@ void sys_close (int fd)
 
 struct file_desc * get_file_desc(int fd, struct thread * t)
 {
-	struct list_elem * e = list_begin(&t->file_list)
+	struct list_elem * e = list_begin(&t->file_list);
 	while(e!= list_end(&t->file_list))
 	{
 		struct file_desc * fd_elem = list_entry(e, struct file_desc, elem);
