@@ -151,10 +151,21 @@ void sys_halt (void)
 
 void sys_exit (int status, struct thread *t)
 {
-    //if(thread_alive(t->parent))
-        //t->cp->status = status;
+	t->exit_code = status;
+	struct thread * parental = t->parent;
+	if(!list_empty(&parental->children)
+	{
+		struct child * kid = get_child(t->tid, parental);
+		if(kid != NULL)
+		{
+			kid->cookies = status;
+			child->dirty = true;
+		}
+		if(t->parent->kid_being_waited_on == t->tid)
+			sema_up(t->parent->child_semaphore);
+	}
+	
     thread_exit();
-       
 }
 
 pid_t sys_exec (const char * cmd_line)
@@ -224,32 +235,97 @@ int sys_open (const char * file, struct thread * t)
 
 int sys_filesize (int fd)
 {
+	struct file_desc * getit = get_file(fd);
+	if(getit != NULL)
+	{
+		lock_acquire(&file_sys_lock);
+		int length = file_length(getit->fp);
+		lock_release(&file_sys_lock);
+		return (length);
+	}
 	return (-1);
 }
 
 int sys_read (int fd, void * buffer, unsigned size)
 {
-	return (-1);
+	int length = 0; 
+	
+	if(fd == STDIN_FILENO) // = 0 file being keyed in
+	{
+      		uint8_t* buffy = (uint8_t *) buffer;
+      		for (int i = 0; i < size; i++)
+	  		buffy[i] = input_getc();
+		return(size);
+	}
+	
+	struct file_desc * getit = get_file(fd);
+	if(getit != NULL)
+	{
+		lock_acquire(&file_sys_lock);
+		length = file_read(getit->fp, buffer, size);
+		lock_release(&file_sys_lock);
+		return(length);
+	}
+	return (-1); //shouldn't happen
 }
 
 int sys_write (int fd, const void * buffer, unsigned size)
 {
-	return (-1);
+	if(fd == STDOUT_FILENO) // = 1 write to screen
+	{
+		putbuf(buffer, size);
+		return (size);
+	}
+	
+	struct file_desc * getit = get_file(fd);
+	if(getit != NULL)
+	{
+		lock_acquire(&file_sys_lock);
+		int staywrote = file_write(getit->fp, buffer, size);
+		lock_release(&file_sys_lock);
+		return(staywrote);
+	}
+	return (-1); //shouldn't happen
 }
 
 void sys_seek (int fd, unsigned position)
 {
-	
+	struct file_desc * getit = get_file(fd);
+	if(getit != NULL)
+	{
+		lock_acquire(&file_sys_lock);
+		file_seek(getit->fp, position);
+		lock_release(&file_sys_lock);
+	}
 }
 
 unsigned sys_tell (int fd)
 {
-	return 0;
+	struct file_desc * getit = get_file(fd);
+	if(getit != NULL)
+	{
+		lock_acquire(&file_sys_lock);
+		unsigned showntell = file_tell(getit->fp);
+		lock_release(&file_sys_lock);
+		return(showntell);
+	}
+	return (ERROR);
 }
 
 void sys_close (int fd)
 {
-
+	if(fd == STDOUT_FILENO || fd == STDIN_FILENO)
+		return();
+	
+	struct file_desc * getit = get_file(fd);
+	if(getit != NULL)
+	{
+		lock_acquire(&file_sys_lock);
+		file_close(getit->fp);
+		lock_release(&file_sys_lock);
+		list_remove(&getit->elem);
+		free(getit);
+	}
 }
 
 struct file_desc * get_file_desc(int fd, struct thread * t)
@@ -262,7 +338,7 @@ struct file_desc * get_file_desc(int fd, struct thread * t)
 			return (fd_elem);
 		e = list_next(e);
 	}
-	return NULL;	
+	return (NULL);	
 }
 
 struct child *  get_child(tid_t tid, struct thread *t)
@@ -275,7 +351,7 @@ struct child *  get_child(tid_t tid, struct thread *t)
 			return (kid);
 		e = list_next(e);
 	}
-	return NULL;	
+	return (NULL);	
 }
 
 
