@@ -223,6 +223,7 @@ void sys_seek (int fd, unsigned position)
 
 unsigned sys_tell (int fd)
 {
+	return null;
 
 }
 
@@ -233,7 +234,7 @@ void sys_close (int fd)
 
 struct file_desc * get_file(int);
 
-struct child *  get_child(tid_t tid, struct thread *t){struct child * ret = NULL;}
+struct child *  get_child(tid_t tid, struct thread *t){return NULL;}
 
 
 
