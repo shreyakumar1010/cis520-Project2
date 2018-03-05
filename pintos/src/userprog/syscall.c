@@ -315,7 +315,7 @@ unsigned sys_tell (int fd)
 void sys_close (int fd)
 {
 	if(fd == STDOUT_FILENO || fd == STDIN_FILENO)
-		return();
+		return;
 	
 	struct file_desc * getit = get_file(fd);
 	if(getit != NULL)
