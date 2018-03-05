@@ -9,8 +9,9 @@
 #include "devices/shutdown.h"
 #include "filesys/filesys.h"
 #include "filesys/file.h"
-#include <user/syscall.h>
+//#include <user/syscall.h>
 #include "threads/malloc.h"
+#include "devices/input.h"
 
 struct lock file_sys_lock;
 static void syscall_handler (struct intr_frame *);
