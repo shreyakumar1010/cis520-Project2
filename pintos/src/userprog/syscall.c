@@ -213,7 +213,7 @@ int sys_open (const char * file, struct thread * t)
 	lock_release(&file_sys_lock);
 	if(temp!= NULL)
 	{
-		struct file_desc * temp_fd = malloc(sizeof(file_desc));
+		struct file_desc * temp_fd = malloc(sizeof(struct file_desc));
 		temp_fd->fd = ++t->fd_count;
 		temp_fd->fp = temp;
 		list_push_front(&t->file_list, &temp_fd->elem);
