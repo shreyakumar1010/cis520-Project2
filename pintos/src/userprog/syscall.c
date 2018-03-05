@@ -160,10 +160,10 @@ void sys_exit (int status, struct thread *t)
 		if(kid != NULL)
 		{
 			kid->cookies = status;
-			child->dirty = true;
+			kid->dirty = true;
 		}
 		if(t->parent->kid_being_waited_on == t->tid)
-			sema_up(t->parent->child_semaphore);
+			sema_up(&t->parent->child_semaphore);
 	}
 	
     thread_exit();
