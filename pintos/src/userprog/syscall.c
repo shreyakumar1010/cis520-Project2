@@ -185,9 +185,9 @@ bool sys_create (const char * file, unsigned initial_size)
 	if(file !=NULL)
 	{
 		lock_acquire(&file_sys_lock);
-		//here we will do something else
+		bool coolinboolin = filesys_create(file, initial_size);
 		lock_acquire(&file_sys_lock);
-		return true;
+		return (coolinboolin);
 	}
 	return (false);
 }
