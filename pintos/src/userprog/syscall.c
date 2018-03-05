@@ -154,7 +154,7 @@ void sys_exit (int status, struct thread *t)
 {
 	t->exit_code = status;
 	struct thread * parental = t->parent;
-	if(!list_empty(&parental->children)
+	if(!list_empty(&parental->children))
 	{
 		struct child * kid = get_child(t->tid, parental);
 		if(kid != NULL)
