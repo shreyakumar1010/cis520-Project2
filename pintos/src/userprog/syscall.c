@@ -9,7 +9,7 @@
 #include "devices/shutdown.h"
 #include "filesys/filesys.h"
 #include "filesys/file.h"
-//#include <user/syscall.h>
+#include <user/syscall.h>
 #include "threads/malloc.h"
 #include "devices/input.h"
 
@@ -260,7 +260,7 @@ int sys_read (int fd, void * buffer, unsigned size)
 		return(size);
 	}
 	
-	struct file_desc * getit = get_file_desc(fd);
+	struct file_desc * getit = get_file_desc(fd, thread_current());
 	if(getit != NULL)
 	{
 		lock_acquire(&file_sys_lock);
