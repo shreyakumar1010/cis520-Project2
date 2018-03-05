@@ -187,6 +187,7 @@ bool sys_create (const char * file, unsigned initial_size)
 		lock_acquire(&file_sys_lock);
 		//here we will do something else
 		lock_acquire(&file_sys_lock);
+		return true;
 	}
 	return (false);
 }
