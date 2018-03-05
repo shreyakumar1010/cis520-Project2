@@ -123,6 +123,7 @@ struct thread
    struct list file_list;
    int fd_count; //keeps track of how many files are open
    struct file * file;
+   int exit_code;
   
   };
 
