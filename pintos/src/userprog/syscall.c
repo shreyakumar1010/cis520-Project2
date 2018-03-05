@@ -309,7 +309,7 @@ unsigned sys_tell (int fd)
 		lock_release(&file_sys_lock);
 		return(showntell);
 	}
-	return (ERROR);
+	return (-1);
 }
 
 void sys_close (int fd)
