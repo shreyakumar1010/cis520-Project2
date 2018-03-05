@@ -217,7 +217,7 @@ int sys_open (const char * file, struct thread * t)
 		temp_fd->fd = ++t->fd_count;
 		temp_fd->fp = temp;
 		list_push_front(&t->file_list, &temp_fd->elem);
-		return (fd_temp->fd);
+		return (temp_fd->fd);
 	}
 	return (-1);
 }
