@@ -267,7 +267,15 @@ struct file_desc * get_file_desc(int fd, struct thread * t)
 
 struct child *  get_child(tid_t tid, struct thread *t)
 {
-	return NULL;
+	struct list_elem * e = list_begin(&t->children);
+	while(e!= list_end(&t->children))
+	{
+		struct file_desc * kid = list_entry(e, struct child, childelem);
+		if (kid->id == tid)
+			return (kid);
+		e = list_next(e);
+	}
+	return NULL;	
 }
 
 
