@@ -223,7 +223,7 @@ void sys_seek (int fd, unsigned position)
 
 unsigned sys_tell (int fd)
 {
-	return null;
+	return NULL;
 
 }
 
