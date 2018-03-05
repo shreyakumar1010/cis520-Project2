@@ -97,7 +97,7 @@ syscall_handler (struct intr_frame *f)
     		case SYS_FILESIZE:
       			if (!userAddressValid(sp+1, thread_current()))
         			sys_exit(-1, thread_current());
-      			f->eax = filesize(*(sp+1));
+      			f->eax = sys_filesize(*(sp+1));
       		break;
 
     		case SYS_READ:
