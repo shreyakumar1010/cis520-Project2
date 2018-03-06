@@ -124,7 +124,7 @@ process_wait (tid_t child_tid UNUSED)
    while(true)
    {
       printf("hi");
-      ASSERT(false);
+      ASSERT(true);
    }
   return -1;
 }
