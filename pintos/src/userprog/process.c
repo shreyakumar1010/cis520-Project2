@@ -310,9 +310,9 @@ load (const char *file_name, void (**eip) (void), void **esp)
    char *afterTokenPointer;
    char *NameThenArguments[20];
    int numOfArguments = 0; 
+   strTokenPointer = strtok_r((char *) file_name, " ", &afterTokenPointer);
    while(strTokenPointer != NULL)
-   {
-      strTokenPointer = strtok_r((char *) file_name, " ", &afterTokenPointer);
+   {      
       NameThenArguments[numOfArguments] = strTokenPointer;
       numOfArguments++;
       strTokenPointer = strtok_r(NULL, " ", &afterTokenPointer);
