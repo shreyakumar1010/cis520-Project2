@@ -26,7 +26,7 @@ struct file_desc * get_file_desc(int fd, struct thread * t);
 
 struct lock file_sys_lock;
 
-struct child * get_child(tid_t tid, struct thread *t);
+
 
 /* A struct to keep file descriptor -> file pointer mapping FIX THIS SHIT*/ 
 struct file_desc
