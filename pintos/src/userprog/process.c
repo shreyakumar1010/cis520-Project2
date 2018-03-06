@@ -121,7 +121,7 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED, struct thread * t) 
 {
-	struct child * child = get_child(tid, t);
+	struct child * child = get_child(child_tid, t);
 	if(list_empty(&t->children) || (child == NULL))
 		return (-1);
 	t->kid_being_waited_on = child_tid;
