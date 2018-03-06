@@ -18,6 +18,7 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 #include "userprog/syscall.h"
+#include "threads/malloc.h"
 
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
@@ -53,7 +54,7 @@ process_execute (const char *file_name_plus_arguments)
    
    /* Need to wait for child thread to load exe */
    sema_down(&t->prod_sema); 
-   if(cur-> prod_flag == false)
+   if(t-> prod_flag == false)
    {
       struct child * theChild = get_child(tid, t);
       if(theChild != NULL)
@@ -152,9 +153,9 @@ process_exit (void)
    {
       struct list_elem *e = list_pop_front(&t->file_list);
       struct file_desc *temp = list_entry(e, struct file_desc, elem);
-      lock_acquire(&file_sys_elem);
+      lock_acquire(&file_sys_lock);
       file_close(temp->fp);
-      lock_release(&file_sys_elem);
+      lock_release(&file_sys_lock);
       list_remove(e);
       free(temp);
    }
