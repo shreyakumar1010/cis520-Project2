@@ -47,6 +47,23 @@ process_execute (const char *file_name_plus_arguments)
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
   return tid;
+   
+   /* Need to wait for child thread to load exe */
+   sema_down(&thread_current()->prod_sema);
+   
+   if(thread_current()-> prod_flag == false)
+   {
+      struct child * theChild = get_child(tid, thread_current());
+      if(theChild != NULL)
+      {
+         list_remove(&theChild-> childelem;
+         free(theChild);
+      }
+                     return TID_ERROR;
+   }
+                     return tid;
+   
+   
 }
 
 /* A thread function that loads a user process and starts it
