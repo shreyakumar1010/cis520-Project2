@@ -119,6 +119,7 @@ struct thread
    struct list children;
    struct semaphore child_semaphore;
    tid_t kid_being_waited_on;
+   struct semaphore prod_sema;
   
    struct list file_list;
    int fd_count; //keeps track of how many files are open
