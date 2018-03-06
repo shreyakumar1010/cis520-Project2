@@ -175,19 +175,7 @@ pid_t sys_exec (const char * cmd_line)
 
 int sys_wait (tid_t tid, struct thread * t)
 {
-	struct child * child = get_child(tid, t);
-	if(list_empty(&t->children) || (child == NULL))
-		return (-1);
-	
-	t->kid_being_waited_on = tid;
-	
-	if (child->dirty == false)
-		sema_down(&t->child_semaphore);
-	int savehiscookies = child->cookies; //we want the kid's cookies, but not the kid
-	list_remove(&child->childelem);
-	free(child); //be free, son!
-	
-    	return (savehiscookies);
+	return(process_wait(id, t));
 }
 
 bool sys_create (const char * file, unsigned initial_size)
