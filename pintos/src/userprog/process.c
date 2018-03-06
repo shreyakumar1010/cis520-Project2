@@ -119,13 +119,18 @@ start_process (void *file_name_)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
+process_wait (tid_t child_tid UNUSED, struct thread * t) 
 {
-   while(true)
-   {
-      
-   }
-  return -1;
+	if(list_empty(&t->children) || (child == NULL))
+		return (-1);
+	struct child * child = get_child(tid, t);
+	t->kid_being_waited_on = tid;
+	if (child->dirty == false)
+		sema_down(&t->child_semaphore);
+	int savehiscookies = child->cookies; //we want the kid's cookies, but not the kid
+	list_remove(&child->childelem);
+	free(child); //be free, son!
+   return (savehiscookies);  
 }
 
 
