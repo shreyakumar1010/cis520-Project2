@@ -56,7 +56,7 @@ process_execute (const char *file_name_plus_arguments)
       struct child * theChild = get_child(tid, thread_current());
       if(theChild != NULL)
       {
-         list_remove(&theChild-> childelem;
+         list_remove(&theChild-> childelem);
          free(theChild);
       }
                      return TID_ERROR;
