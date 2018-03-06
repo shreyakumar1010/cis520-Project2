@@ -124,7 +124,7 @@ process_wait (tid_t child_tid UNUSED, struct thread * t)
 	struct child * child = get_child(tid, t);
 	if(list_empty(&t->children) || (child == NULL))
 		return (-1);
-	t->kid_being_waited_on = tid;
+	t->kid_being_waited_on = child_tid;
 	if (child->dirty == false)
 		sema_down(&t->child_semaphore);
 	int savehiscookies = child->cookies; //we want the kid's cookies, but not the kid
