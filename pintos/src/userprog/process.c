@@ -84,8 +84,13 @@ start_process (void *file_name_)
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
-  if (!success) 
-    thread_exit ();
+  if (!success)
+  {
+     thread_current() ->exit_code = -1;
+     thread_current() -> parent -> prod_flag = false;
+     sema_up(&thread_current()-> parent -> prod_sema);
+     thread_exit ();
+  }
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
