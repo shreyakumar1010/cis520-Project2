@@ -121,9 +121,9 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED, struct thread * t) 
 {
+	struct child * child = get_child(tid, t);
 	if(list_empty(&t->children) || (child == NULL))
 		return (-1);
-	struct child * child = get_child(tid, t);
 	t->kid_being_waited_on = tid;
 	if (child->dirty == false)
 		sema_down(&t->child_semaphore);
