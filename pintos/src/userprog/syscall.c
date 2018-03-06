@@ -13,7 +13,7 @@
 #include "threads/malloc.h"
 #include "devices/input.h"
 
-struct lock file_sys_lock;
+
 static void syscall_handler (struct intr_frame *);
 
 void
