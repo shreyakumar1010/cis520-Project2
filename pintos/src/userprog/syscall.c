@@ -175,7 +175,7 @@ pid_t sys_exec (const char * cmd_line)
 
 int sys_wait (tid_t tid, struct thread * t)
 {
-	return(process_wait(id, t));
+	return(process_wait(tid, t));
 }
 
 bool sys_create (const char * file, unsigned initial_size)
