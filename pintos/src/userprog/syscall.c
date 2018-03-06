@@ -107,9 +107,7 @@ syscall_handler (struct intr_frame *f)
 		
     		case SYS_WRITE:
       			if (!userAddressValid(sp+5, t) || !userAddressValid(sp+6, t) || !userAddressValid (sp+7, t) || !userAddressValid((void *)(sp+6), t))
-			{
         			sys_exit(-1, t);
-			}
       			f->eax = sys_write(*(sp+5),(void *)(sp+6),*(sp+7));
       		break;
     
