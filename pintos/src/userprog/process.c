@@ -552,7 +552,7 @@ setup_stack (void **esp, char *file_name)
   uint8_t *kpage;
   bool success = false;
   int test = 0;
-  *esp = PHYS_BASE - 12
+  *esp = PHYS_BASE - 12;
   kpage = palloc_get_page (PAL_USER | PAL_ZERO);
   if (kpage != NULL) 
   {
