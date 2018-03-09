@@ -157,7 +157,7 @@ process_exit (void)
   uint32_t *pd;
    //PRINT EXIT MESSAGE 
    
-   printf("%s: exit(%d)\n",cur->name,t->exit_code);
+   printf("%s: exit(%d)\n",t->name,t->exit_code);
 	
    lock_acquire(&file_sys_lock);
    if(t->file != NULL)
