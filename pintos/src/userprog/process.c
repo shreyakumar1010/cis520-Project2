@@ -279,7 +279,7 @@ struct Elf32_Phdr
 
 
 //Added arguments to setup stack
-static bool setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20]);
+static bool setup_stack (void **esp, char * cmdline);
 static bool validate_segment (const struct Elf32_Phdr *, struct file *);
 static bool load_segment (struct file *file, off_t ofs, uint8_t *upage,
                           uint32_t read_bytes, uint32_t zero_bytes,
@@ -319,13 +319,22 @@ load (const char *file_name, void (**eip) (void), void **esp)
    }
 	*/
  
-  /* Open executable file. */
-  file = filesys_open (NameThenArguments[0]);
+  /* Open executable file. */   //SAME REPLACE
+  char * fn_cp = malloc (strlen(file_name)+1);
+  strlcpy(fn_cp, file_name, strlen(file_name)+1);
+  char * save_ptr;
+  fn_cp = strtok_r(fn_cp," ",&save_ptr);
+  /*  Opening executable 
+      It will be kept open until the new process exits
+      OR load fails */
+  file = filesys_open (fn_cp);
+  free(fn_cp);
+   
   if (file == NULL) 
     {
       printf ("load: %s: open failed\n", file_name);
       goto done; 
-    }
+}
 
   /* Read and verify executable header. */
   if (file_read (file, &ehdr, sizeof ehdr) != sizeof ehdr
