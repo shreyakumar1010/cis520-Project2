@@ -45,7 +45,7 @@ process_execute (const char *file_name_plus_arguments)
   strlcpy (fn_copy, file_name_plus_arguments, PGSIZE);
    
   process_name=fn_copy+strlen(fn_copy)+1;
-  strlcpy(process_name,file_name,strlen(file_name)+1);
+  strlcpy(process_name,file_name_plus_arguments,strlen(file_name_plus_arguments)+1);
 	
   char *save_ptr;
   process_name = strtok_r (process_name," ",&save_ptr);
@@ -157,7 +157,7 @@ process_exit (void)
   uint32_t *pd;
    //PRINT EXIT MESSAGE 
    
-   printf("%s: exit(%d)\n",cur->name,cur->exit_code);
+   printf("%s: exit(%d)\n",cur->name,t->exit_code);
 	
    lock_acquire(&file_sys_lock);
    if(t->file != NULL)
