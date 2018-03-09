@@ -3,15 +3,15 @@
 #include <syscall-nr.h>
 #include "threads/interrupt.h"
 #include "threads/thread.h"
-#include "userprog/process.h"
-#include "userprog/pagedir.h"
+#include "process.h"
+#include "pagedir.h"
 #include "threads/vaddr.h"
 #include "devices/shutdown.h"
 #include "filesys/filesys.h"
-#include "filesys/file.h"
-#include <user/syscall.h>
-#include "threads/malloc.h"
-#include "devices/input.h"
+//#include "filesys/file.h"
+//#include <user/syscall.h>
+//#include "threads/malloc.h"
+//#include "devices/input.h"
 
 
 static void syscall_handler (struct intr_frame *);
@@ -26,12 +26,9 @@ syscall_init (void)
 // Validates the user address
 bool userAddressValid (void * virtualAddress, struct thread * t)
 {
-    if (pagedir_get_page(t->pagedir, virtualAddress)!= NULL)
-    {
-        if (is_user_vaddr(virtualAddress))
-            return true;
-	else 
-	    return false;
+    if (pagedir_get_page(t->pagedir, virtualAddress)!= NULL && is_user_vaddr(virtualAddress))
+    {      
+	    return true;	
     }
     else
         return false; 
@@ -55,7 +52,9 @@ syscall_handler (struct intr_frame *f)
 	{
   		case SYS_EXEC:
 			if(!userAddressValid(sp+1, t) || !userAddressValid((void *)(sp+1), t))
- 	  			sys_exit(-1, t);
+			{
+				sys_exit(-1, t);
+			}
 			f->eax = sys_exec((void *)(sp+1));
 		break;
 
@@ -65,68 +64,90 @@ syscall_handler (struct intr_frame *f)
 
   		case SYS_EXIT:
 			if(!userAddressValid(sp+1, t))
- 	  			sys_exit(-1, t);
+			{
+				sys_exit(-1, t);
+			}
 			sys_exit(*(sp+1), t);
 		break;
 
   		case SYS_WAIT:
       			if(!userAddressValid(sp+1, t))
-        			sys_exit(-1, t); 
+			{
+				sys_exit(-1, t); 
+			}
       			f->eax = sys_wait(*(sp+1), t);
       		break;
     
   		case SYS_CREATE:
       			if(!userAddressValid(sp+4, t) || !userAddressValid(sp+5, t) || !userAddressValid((void *)(sp+4), t))
-        			sys_exit(-1, t);
+			{
+				sys_exit(-1, t);
+			}
       			f->eax = sys_create ((void*)(sp+4), *(sp+5));
       		break;
     
     		case SYS_REMOVE:
       			if(!userAddressValid(sp+1, t) || !userAddressValid((void *)(sp+1), t))
-        			sys_exit(-1, t);
+			{
+				sys_exit(-1, t);
+			}
       			f->eax = sys_remove((void *)(sp+1));
       		break;
     
     		case SYS_OPEN:
       			if(!userAddressValid (sp+1, t) || !userAddressValid((void *)(sp+1), t))
-        			sys_exit(-1, t);
+			{
+				sys_exit(-1, t);
+			}
       			f->eax = sys_open ((void *)(sp+1), t);
       		break;
    
     		case SYS_FILESIZE:
       			if (!userAddressValid(sp+1, t))
-        			sys_exit(-1, t);
+			{
+				sys_exit(-1, t);
+			}
       			f->eax = sys_filesize(*(sp+1));
       		break;
 
     		case SYS_READ:
       			if (!userAddressValid(sp+5, t) || !userAddressValid (sp+6, t) || !userAddressValid (sp+7, t) || !userAddressValid ((void *)(sp+6), t))
-        			sys_exit(-1, t);
+			{ 
+				sys_exit(-1, t);
+			}
       			f->eax=sys_read(*(sp+5),(void *)(sp+6),*(sp+7));
       		break;
 		
     		case SYS_WRITE:
-      			if (!userAddressValid(sp+5, t) || !userAddressValid(sp+6, t) || !userAddressValid (sp+7, t) || !userAddressValid((void *)(sp+6), t))
-        			sys_exit(-1, t);
+      			if (!userAddressValid(sp+5, t) || !userAddressValid(sp+6, t) || !userAddressValid (sp+7, t) || !userAddressValid((void *)(sp+6), t)
+			  { 
+				  sys_exit(-1, t);
+			  }
       			f->eax = sys_write(*(sp+5),(void *)(sp+6),*(sp+7));
       		break;
     
     		case SYS_SEEK:
       			if(!userAddressValid(sp+4, t) || !userAddressValid(sp+5, t))
+			{
         			sys_exit(-1, t);
+			}
       			sys_seek(*(sp+4),*(sp+5));
       		break;
     
 	
     		case SYS_TELL:
       			if(!userAddressValid(sp+1, t))
+			{
         			sys_exit(-1, t);
+			}
       			f->eax = sys_tell(*(sp+1));
       		break;
 		
     		case SYS_CLOSE:
       			if (!userAddressValid(sp+1, t))
+			{
         			sys_exit(-1, t);
+			}
       			sys_close(*(sp+1));
       		break;
     
@@ -147,6 +168,7 @@ void sys_halt (void)
 void sys_exit (int status, struct thread *t)
 {
 	t->exit_code = status;
+	
 	struct thread * parental = t->parent;
 	if(!list_empty(&parental->children))
 	{
@@ -155,9 +177,10 @@ void sys_exit (int status, struct thread *t)
 		{
 			kid->cookies = status;
 			kid->dirty = true;
+		
+			if(t->parent->kid_being_waited_on == t->tid)
+				sema_up(&t->parent->child_semaphore);
 		}
-		if(t->parent->kid_being_waited_on == t->tid)
-			sema_up(&t->parent->child_semaphore);
 	}
 	
     thread_exit();
@@ -195,9 +218,9 @@ bool sys_remove (const char * file)
 		lock_acquire(&file_sys_lock);
 		bool removed = filesys_remove(file);
 		lock_release(&file_sys_lock);
-		return(removed);
+		return removed;
 	}
-	return (false);
+	return false;
 }
 
 int sys_open (const char * file, struct thread * t) 
@@ -235,13 +258,23 @@ int sys_read (int fd, void * buffer, unsigned size)
 	
 	if(fd == STDIN_FILENO) // = 0 file being keyed in
 	{
-      		uint8_t* buffy = (uint8_t *) buffer;
+		
+      		/*uint8_t* buffy = (uint8_t *) buffer;
       		for (int i = 0; i < size; i++)
 	  		buffy[i] = input_getc();
-		return(size);
+		return(size);*/
+		
+	       while (length < size)
+	       {
+	           *((char *)buffer+length) = input_getc();
+		   length++;
+	       }
+          return length;
+
 	}
 	
 	struct file_desc * getit = get_file_desc(fd, thread_current());
+	
 	if(getit != NULL)
 	{
 		lock_acquire(&file_sys_lock);
