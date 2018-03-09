@@ -552,13 +552,14 @@ setup_stack (void **esp, char *file_name)
   uint8_t *kpage;
   bool success = false;
   int test = 0;
+  *esp = PHYS_BASE - 12
   kpage = palloc_get_page (PAL_USER | PAL_ZERO);
   if (kpage != NULL) 
   {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
       if (success)
       {
-	      *esp = PHYS_BASE;
+	      *esp = PHYS_BASE - 12;
 	 /*ASSERT(test == 1);     
          //Offsetting phys_base as instructed in project 2
          *esp = PHYS_BASE - 12;
