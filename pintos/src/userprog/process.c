@@ -34,6 +34,7 @@ process_execute (const char *file_name_plus_arguments)
 {
   struct thread *t = thread_current (); 
   char *fn_copy;
+  char *process_name;
   tid_t tid;
 
   /* Make a copy of FILE_NAME.
@@ -43,11 +44,15 @@ process_execute (const char *file_name_plus_arguments)
     return TID_ERROR;
   strlcpy (fn_copy, file_name_plus_arguments, PGSIZE);
    
-  char *arguments;
-  char *theFileName = strtok_r((char *) file_name_plus_arguments, " ", &arguments);
+  process_name=fn_copy+strlen(fn_copy)+1;
+  strlcpy(process_name,file_name,strlen(file_name)+1);
+	
+  char *save_ptr;
+  process_name = strtok_r (process_name," ",&save_ptr);
+  
 
   /* Create a new thread to execute FILE_NAME. */
-  tid = thread_create (theFileName, PRI_DEFAULT, start_process, fn_copy);
+  tid = thread_create (process_name, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
   return tid;
@@ -121,15 +126,24 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED, struct thread * t) 
 {
-	struct child * child = get_child(child_tid, t);
-	if(list_empty(&t->children) || (child == NULL))
+	
+	if(list_empty(&t->children) )
 		return (-1);
+	
+	struct child * child = get_child(child_tid, t);
+	
+	if ( child == NULL){return -1;}
+	
 	t->kid_being_waited_on = child_tid;
+	
 	if (child->dirty == false)
 		sema_down(&t->child_semaphore);
+	
 	int savehiscookies = child->cookies; //we want the kid's cookies, but not the kid
+	
 	list_remove(&child->childelem);
 	free(child); //be free, son!
+	
    return (savehiscookies);  
 }
 
@@ -141,7 +155,10 @@ process_exit (void)
 {
   struct thread *t = thread_current ();
   uint32_t *pd;
+   //PRINT EXIT MESSAGE 
    
+   printf("%s: exit(%d)\n",cur->name,cur->exit_code);
+	
    lock_acquire(&file_sys_lock);
    if(t->file != NULL)
       file_close(t->file);
@@ -159,9 +176,11 @@ process_exit (void)
    {
       struct list_elem *e = list_pop_front(&t->file_list);
       struct file_desc *temp = list_entry(e, struct file_desc, elem);
+      
       lock_acquire(&file_sys_lock);
       file_close(temp->fp);
       lock_release(&file_sys_lock);
+     
       list_remove(e);
       free(temp);
    }
@@ -412,7 +431,9 @@ load (const char *file_name, void (**eip) (void), void **esp)
   done:
   /* We arrive here whether the load is successful or not. */
   if(success == false)
+  {
       file_close (file);
+  }
   return success;
 }
 
