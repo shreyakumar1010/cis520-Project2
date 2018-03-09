@@ -306,7 +306,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   if (t->pagedir == NULL) 
     goto done;
   process_activate ();
-   char *strTokenPointer;
+ /*  char *strTokenPointer;
    char *afterTokenPointer;
    char *NameThenArguments[20];
    int numOfArguments = 0; 
@@ -317,6 +317,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
       numOfArguments++;
       strTokenPointer = strtok_r(NULL, " ", &afterTokenPointer);
    }
+	*/
  
   /* Open executable file. */
   file = filesys_open (NameThenArguments[0]);
@@ -516,7 +517,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
 /* Create a minimal stack by mapping a zeroed page at the top of
    user virtual memory. */
 static bool
-setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20]) 
+setup_stack (void **esp, char *file_name) 
 {
   uint8_t *kpage;
   bool success = false;
@@ -527,7 +528,8 @@ setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20])
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
       if (success)
       {
-	 ASSERT(test == 1);     
+	      *esp = PHYS_BASE;
+	 /*ASSERT(test == 1);     
          //Offsetting phys_base as instructed in project 2
          *esp = PHYS_BASE - 12;
          uint32_t * argument_value_pointers_array[numOfArguments];
@@ -553,11 +555,67 @@ setup_stack (void **esp, int numOfArguments, char *NameThenArguments[20])
          *esp = *esp -4;
          *(int *) (*esp) = numOfArguments; 
          *esp = *esp - 4;
-         (* (int *) (*esp)) = 0;  
+         (* (int *) (*esp)) = 0;  */
     }
     else
       palloc_free_page (kpage);
   }
+	
+  char * token;
+  char * save_ptr;
+  // Initial argv_size | Will be incremented as needed
+  int argv_size = 2;
+  int argc = 0;
+  char ** argv = malloc (argv_size * sizeof(char *));
+  
+  for (token = strtok_r (file_name, " ", &save_ptr); token!= NULL;
+      token = strtok_r (NULL, " ", &save_ptr))
+  {
+    *esp -= strlen(token) + 1;
+    argv[argc] = *esp;
+    argc++;
+    
+    if (argc >= 64)
+    {
+      free(argv);
+      return false;
+    }
+
+    
+    if (argc >= argv_size) 
+    {
+      argv_size *= 2;
+      argv = realloc(argv,argv_size* sizeof(char *));
+    }
+    
+    memcpy(*esp,token,strlen(token) + 1);
+  
+  }
+  
+  argv[argc] = 0;
+
+  int i = 0;
+  for (i = argc; i >= 0; i--)
+  {
+    *esp -= sizeof(char*);
+    memcpy(*esp,&argv[i],sizeof(char*));
+
+  }
+  
+  //pushing argv
+  token = *esp;
+  *esp-=sizeof(char**);
+  memcpy(*esp,&token,sizeof(char**));
+  
+  // Pushing argc
+  *esp -= sizeof(int);
+  memcpy(*esp,&argc,sizeof(int));
+
+  // Pushing fake return address
+  *esp -= sizeof(void*);
+  memcpy(*esp, &argv[argc],sizeof(void *));
+free(argv);
+	
   return success;
 }
 
