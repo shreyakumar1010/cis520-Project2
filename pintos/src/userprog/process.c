@@ -51,9 +51,8 @@ process_execute (const char *file_name_plus_arguments)
   strlcpy(process_name,file_name_plus_arguments,strlen(file_name_plus_arguments)+1);
 	
   char *save_ptr;
-	ASSERT(false);
   process_name = strtok_r (process_name," ",&save_ptr);
-  
+  ASSERT(false);
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (process_name, PRI_DEFAULT, start_process, fn_copy);
