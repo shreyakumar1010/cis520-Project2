@@ -719,15 +719,12 @@ install_page (void *upage, void *kpage, bool writable)
 
 struct child *  get_child(tid_t tid, struct thread *t)
 {
-	int test = 0;
-	struct list_elem * e = list_begin(&t->children);
-	while(e!= list_end(&t->children))
-	{
-		ASSERT (test == 1);
-		struct child * kid = list_entry(e, struct child, childelem);
-		if (kid->id == tid)
-			return (kid);
-		e = list_next(e);
-	}
-	return (NULL);	
+	struct list_elem * e;
+  	for (e=list_begin(&t->children); e!=list_end(&t->children); e=list_next(e))
+  	{
+    		struct child * child = list_entry(e,struct child,elem);
+    		if(child->id == id)
+      			return child;
+  	}
+  return NULL;
 }
