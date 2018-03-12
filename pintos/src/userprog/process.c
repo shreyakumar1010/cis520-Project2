@@ -694,6 +694,7 @@ setup_stack (void **esp, char *file_name)
 free(argv);
 	ASSERT(false);
 	
+	hex_dump(PHYS_BASE,*esp,PHYS_BASE-(*esp),true);
   return success;
 }
 
