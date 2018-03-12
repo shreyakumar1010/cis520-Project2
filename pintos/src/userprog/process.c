@@ -41,19 +41,24 @@ process_execute (const char *file_name_plus_arguments)
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
   if (fn_copy == NULL)
+  {
+	  ASSERT(false);
     return TID_ERROR;
+  }
   strlcpy (fn_copy, file_name_plus_arguments, PGSIZE);
-   
+  
   process_name=fn_copy+strlen(fn_copy)+1;
   strlcpy(process_name,file_name_plus_arguments,strlen(file_name_plus_arguments)+1);
 	
   char *save_ptr;
   process_name = strtok_r (process_name," ",&save_ptr);
+	ASSERT(false);
   
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (process_name, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
+	  ASSERT(false);
     palloc_free_page (fn_copy); 
   return tid;
    
@@ -61,9 +66,11 @@ process_execute (const char *file_name_plus_arguments)
    sema_down(&t->prod_sema); 
    if(t-> prod_flag == false)
    {
+	   ASSERT(false);
       struct child * theChild = get_child(tid, t);
       if(theChild != NULL)
       {
+	      ASSERT(false);
          list_remove(&theChild-> childelem);
          free(theChild);
       }
@@ -95,10 +102,12 @@ start_process (void *file_name_)
   palloc_free_page (file_name);
   if (!success)
   {
+	  ASSERT(false);
      t ->exit_code = -1;
      t -> parent -> prod_flag = false;
      sema_up(&t-> parent -> prod_sema);
      thread_exit ();
+	  ASSERT(false);
   }
       t->parent->prod_flag = true;
       sema_up (&t->parent->prod_sema);
@@ -110,6 +119,7 @@ start_process (void *file_name_)
      we just point the stack pointer (%esp) to our stack frame
      and jump to it. */
   asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g" (&if_) : "memory");
+	ASSERT(false);
   NOT_REACHED ();
 }
 
@@ -128,21 +138,32 @@ process_wait (tid_t child_tid UNUSED, struct thread * t)
 {
 	
 	if(list_empty(&t->children) )
+	{
+	ASSERT(false);
 		return (-1);
+	}
 	
 	struct child * child = get_child(child_tid, t);
 	
-	if ( child == NULL){return -1;}
+	if ( child == NULL)
+	{
+		ASSERT(false);
+		return -1;
+	}
 	
 	t->kid_being_waited_on = child_tid;
 	
 	if (child->dirty == false)
+	{
+		ASSERT(false);
 		sema_down(&t->child_semaphore);
+	}
 	
 	int savehiscookies = child->cookies; //we want the kid's cookies, but not the kid
 	
 	list_remove(&child->childelem);
 	free(child); //be free, son!
+	ASSERT(false);
 	
    return (savehiscookies);  
 }
@@ -156,31 +177,36 @@ process_exit (void)
   struct thread *t = thread_current ();
   uint32_t *pd;
    //PRINT EXIT MESSAGE 
-   
+   ASSERT(false);
    printf("%s: exit(%d)\n",t->name,t->exit_code);
 	
    lock_acquire(&file_sys_lock);
    if(t->file != NULL)
+   {
+	   ASSERT (false);
       file_close(t->file);
+   }
    lock_release(&file_sys_lock);
    
    while(!list_empty(&t->children))
    {
+	   ASSERT(false);
       struct list_elem *e = list_pop_front(&t->children);
       struct child *kid = list_entry(e, struct child, childelem);
       list_remove(e);
       free(kid);
+	   ASSERT(false);
    }
    
    while(!list_empty(&t->file_list))
    {
       struct list_elem *e = list_pop_front(&t->file_list);
       struct file_desc *temp = list_entry(e, struct file_desc, elem);
-      
+      ASSERT(false);
       lock_acquire(&file_sys_lock);
       file_close(temp->fp);
       lock_release(&file_sys_lock);
-     
+     ASSERT(false);
       list_remove(e);
       free(temp);
    }
@@ -212,6 +238,7 @@ void
 process_activate (void)
 {
   struct thread *t = thread_current ();
+	ASSERT(false);
 
   /* Activate thread's page tables. */
   pagedir_activate (t->pagedir);
@@ -219,6 +246,7 @@ process_activate (void)
   /* Set thread's kernel stack for use in processing
      interrupts. */
   tss_update ();
+	ASSERT(false);
 }
 
 
@@ -319,11 +347,15 @@ load (const char *file_name, void (**eip) (void), void **esp)
   off_t file_ofs;
   bool success = false;
   int i;
+	ASSERT(false);
 
   /* Allocate and activate page directory. */
   t->pagedir = pagedir_create ();
   if (t->pagedir == NULL) 
+  {
+	  ASSERT(false);
     goto done;
+  }
   process_activate ();
  /*  char *strTokenPointer;
    char *afterTokenPointer;
@@ -342,6 +374,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   char * fn_cp = malloc (strlen(file_name)+1);
   strlcpy(fn_cp, file_name, strlen(file_name)+1);
   char * save_ptr;
+	ASSERT(false);
   fn_cp = strtok_r(fn_cp," ",&save_ptr);
   /*  Opening executable 
       It will be kept open until the new process exits
@@ -351,8 +384,10 @@ load (const char *file_name, void (**eip) (void), void **esp)
    
   if (file == NULL) 
     {
+	  ASSERT(false);
       printf ("load: %s: open failed\n", file_name);
       goto done; 
+	  ASSERT(false);
 }
 
   /* Read and verify executable header. */
@@ -361,6 +396,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
       || ehdr.e_machine != 3 || ehdr.e_version != 1 || ehdr.e_phentsize != sizeof (struct Elf32_Phdr)
       || ehdr.e_phnum > 1024) 
     {
+	  ASSERT(false);
       printf ("load: %s: error loading executable\n", file_name);
       goto done; 
     }
@@ -369,6 +405,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   file_ofs = ehdr.e_phoff;
   for (i = 0; i < ehdr.e_phnum; i++) 
     {
+	  ASSERT(false);
       struct Elf32_Phdr phdr;
       if (file_ofs < 0 || file_ofs > file_length (file))
         goto done;
@@ -376,6 +413,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
       if (file_read (file, &phdr, sizeof phdr) != sizeof phdr)
         goto done;
       file_ofs += sizeof phdr;
+	  ASSERT(false);
       switch (phdr.p_type) 
       {
          case PT_NULL:
@@ -432,6 +470,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   /* We arrive here whether the load is successful or not. */
   if(success == false)
   {
+	  ASSERT(false);
       file_close (file);
   }
   return success;
@@ -553,6 +592,7 @@ setup_stack (void **esp, char *file_name)
   bool success = false;
   int test = 0;
   *esp = PHYS_BASE - 12;
+	ASSERT(false);
   kpage = palloc_get_page (PAL_USER | PAL_ZERO);
   if (kpage != NULL) 
   {
@@ -560,6 +600,7 @@ setup_stack (void **esp, char *file_name)
       if (success)
       {
 	      *esp = PHYS_BASE - 12;
+	      ASSERT(false);
 	 /*ASSERT(test == 1);     
          //Offsetting phys_base as instructed in project 2
          *esp = PHYS_BASE - 12;
@@ -605,9 +646,11 @@ setup_stack (void **esp, char *file_name)
     *esp -= strlen(token) + 1;
     argv[argc] = *esp;
     argc++;
+	  ASSERT(false);
     
     if (argc >= 64)
     {
+	    ASSERT(false);
       free(argv);
       return false;
     }
@@ -615,12 +658,14 @@ setup_stack (void **esp, char *file_name)
     
     if (argc >= argv_size) 
     {
+	    ASSERT(false);
       argv_size *= 2;
       argv = realloc(argv,argv_size* sizeof(char *));
+	    ASSERT(false);
     }
     
     memcpy(*esp,token,strlen(token) + 1);
-  
+  ASSERT(false);
   }
   
   argv[argc] = 0;
@@ -628,6 +673,7 @@ setup_stack (void **esp, char *file_name)
   int i = 0;
   for (i = argc; i >= 0; i--)
   {
+	  ASSERT(false);
     *esp -= sizeof(char*);
     memcpy(*esp,&argv[i],sizeof(char*));
 
@@ -646,6 +692,7 @@ setup_stack (void **esp, char *file_name)
   *esp -= sizeof(void*);
   memcpy(*esp, &argv[argc],sizeof(void *));
 free(argv);
+	ASSERT(false);
 	
   return success;
 }
