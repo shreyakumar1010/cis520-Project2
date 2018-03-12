@@ -238,7 +238,6 @@ void
 process_activate (void)
 {
   struct thread *t = thread_current ();
-	ASSERT(false);
 
   /* Activate thread's page tables. */
   pagedir_activate (t->pagedir);
