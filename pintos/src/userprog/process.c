@@ -135,7 +135,6 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED, struct thread * t) 
 {
-	ASSERT(false);
 	if(list_empty(&t->children) )
 	{
 	ASSERT(false);
@@ -143,6 +142,7 @@ process_wait (tid_t child_tid UNUSED, struct thread * t)
 	}
 	
 	struct child * child = get_child(child_tid, t);
+	ASSERT(false);
 	
 	if ( child == NULL)
 	{
