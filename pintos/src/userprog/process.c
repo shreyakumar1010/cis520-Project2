@@ -723,7 +723,7 @@ struct child *  get_child(tid_t tid, struct thread *t)
   	for (e=list_begin(&t->children); e!=list_end(&t->children); e=list_next(e))
   	{
     		struct child * child = list_entry(e, struct child, childelem);
-    		if(child->tid == tid)
+    		if(child->id == tid)
       			return child;
   	}
   return NULL;
