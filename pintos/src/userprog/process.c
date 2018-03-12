@@ -57,13 +57,14 @@ process_execute (const char *file_name_plus_arguments)
   tid = thread_create (process_name, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
   {
-	  ASSERT(false);
+    ASSERT(false);
     palloc_free_page (fn_copy); 
   return tid;
   }
    
    /* Need to wait for child thread to load exe */
    sema_down(&t->prod_sema); 
+	ASSERT(false);
    if(t-> prod_flag == false)
    {
 	   ASSERT(false);
