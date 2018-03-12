@@ -52,10 +52,10 @@ process_execute (const char *file_name_plus_arguments)
 	
   char *save_ptr;
   process_name = strtok_r (process_name," ",&save_ptr);
-  ASSERT(false);
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (process_name, PRI_DEFAULT, start_process, fn_copy);
+	ASSERT(false);
   if (tid == TID_ERROR)
 	  ASSERT(false);
     palloc_free_page (fn_copy); 
