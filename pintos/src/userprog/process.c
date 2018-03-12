@@ -46,9 +46,9 @@ process_execute (const char *file_name_plus_arguments)
     return TID_ERROR;
   }
   strlcpy (fn_copy, file_name_plus_arguments, PGSIZE);
-	ASSERT(false);
   
   process_name=fn_copy+strlen(fn_copy)+1;
+	ASSERT(false);
   strlcpy(process_name,file_name_plus_arguments,strlen(file_name_plus_arguments)+1);
 	
   char *save_ptr;
