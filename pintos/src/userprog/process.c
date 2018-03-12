@@ -48,8 +48,8 @@ process_execute (const char *file_name_plus_arguments)
   strlcpy (fn_copy, file_name_plus_arguments, PGSIZE);
   
   process_name=fn_copy+strlen(fn_copy)+1;
-	ASSERT(false);
   strlcpy(process_name,file_name_plus_arguments,strlen(file_name_plus_arguments)+1);
+	ASSERT(false);
 	
   char *save_ptr;
   process_name = strtok_r (process_name," ",&save_ptr);
