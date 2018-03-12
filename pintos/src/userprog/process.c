@@ -40,13 +40,13 @@ process_execute (const char *file_name_plus_arguments)
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
-	ASSERT(false);
   if (fn_copy == NULL)
   {
 	  ASSERT(false);
     return TID_ERROR;
   }
   strlcpy (fn_copy, file_name_plus_arguments, PGSIZE);
+	ASSERT(false);
   
   process_name=fn_copy+strlen(fn_copy)+1;
   strlcpy(process_name,file_name_plus_arguments,strlen(file_name_plus_arguments)+1);
